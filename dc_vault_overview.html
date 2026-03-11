@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Center Vault — Structure Overview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0a0e17;
+    color: #e0e6ed;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #7a8ba8;
+    margin-bottom: 50px;
+    font-weight: 400;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Section headers */
+  .section-header {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: #7a8ba8;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+    margin-top: 50px;
+  }
+  .section-header:first-of-type { margin-top: 0; }
+
+  /* Value chain visual */
+  .chain-container {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 12px;
+  }
+  .chain-layer {
+    flex: 1;
+    padding: 16px 14px;
+    text-align: center;
+    position: relative;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .chain-layer:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 20%;
+    height: 60%;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, #2a3a50, transparent);
+  }
+  .chain-l1 { background: linear-gradient(135deg, #1a1030 0%, #201540 100%); border-radius: 12px 0 0 12px; border: 1px solid #2a2050; }
+  .chain-l2 { background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%); border: 1px solid #1e3a5f; border-left: none; }
+  .chain-l3 { background: linear-gradient(135deg, #0d1a14 0%, #111f18 100%); border: 1px solid #1e3a2e; border-left: none; }
+  .chain-l4 { background: linear-gradient(135deg, #1a150d 0%, #201a11 100%); border: 1px solid #3a2e1e; border-left: none; }
+  .chain-l5 { background: linear-gradient(135deg, #1a0d0d 0%, #201111 100%); border-radius: 0 12px 12px 0; border: 1px solid #3a1e1e; border-left: none; }
+
+  .chain-number {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    opacity: 0.5;
+  }
+  .chain-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .chain-l1 .chain-name { color: #b080e0; }
+  .chain-l2 .chain-name { color: #6ab4ff; }
+  .chain-l3 .chain-name { color: #50e0a0; }
+  .chain-l4 .chain-name { color: #f0b850; }
+  .chain-l5 .chain-name { color: #e07070; }
+
+  .chain-companies {
+    font-size: 0.68rem;
+    color: #8a9ab5;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .chain-margin {
+    font-size: 0.62rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: auto;
+  }
+  .chain-l1 .chain-margin { background: #1a1030; color: #9070c0; border: 1px solid #2a2050; }
+  .chain-l2 .chain-margin { background: #0d1520; color: #5090c0; border: 1px solid #1a3050; }
+  .chain-l3 .chain-margin { background: #0d1a14; color: #40b080; border: 1px solid #1a3a2a; }
+  .chain-l4 .chain-margin { background: #1a1508; color: #c09030; border: 1px solid #3a2e1a; }
+  .chain-l5 .chain-margin { background: #1a0d0d; color: #c05050; border: 1px solid #3a1a1a; }
+
+  .chain-flow-label {
+    text-align: center;
+    font-size: 0.65rem;
+    color: #3a4a60;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* File grid */
+  .file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  .file-card {
+    padding: 18px 22px;
+    border-radius: 10px;
+    background: #0e1320;
+    border: 1px solid #1a2235;
+    position: relative;
+    overflow: hidden;
+  }
+  .file-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    border-radius: 3px 0 0 3px;
+  }
+  .file-card-structural::before { background: #4a9eff; }
+  .file-card-analytical::before { background: #f0a030; }
+  .file-card-signal::before { background: #40d090; }
+  .file-card-meta::before { background: #5a6a80; }
+
+  .file-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    margin-bottom: 4px;
+  }
+  .file-card-structural .file-name { color: #6ab4ff; }
+  .file-card-analytical .file-name { color: #f0b850; }
+  .file-card-signal .file-name { color: #50e0a0; }
+  .file-card-meta .file-name { color: #7a8ba8; }
+
+  .file-purpose {
+    font-size: 0.72rem;
+    color: #7a8ba8;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .file-example {
+    font-size: 0.65rem;
+    color: #5a6a80;
+    padding: 8px 10px;
+    background: #0a0e17;
+    border-radius: 6px;
+    border: 1px solid #151a25;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .file-tag {
+    display: inline-block;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+  }
+  .tag-feeds { background: #1a2a1a; color: #50c050; border: 1px solid #2a3a2a; }
+  .tag-no-feed { background: #2a1a1a; color: #c05050; border: 1px solid #3a2a2a; }
+  .tag-partial { background: #2a2a1a; color: #c0b050; border: 1px solid #3a3a2a; }
+
+  /* Company nodes */
+  .nodes-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .node-group {
+    flex: 1;
+    min-width: 300px;
+    padding: 18px 22px;
+    border-radius: 10px;
+  }
+  .node-full {
+    background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%);
+    border: 1px solid #1e3a5f;
+  }
+  .node-light {
+    background: linear-gradient(135deg, #0e0e1a 0%, #121220 100%);
+    border: 1px dashed #2a2a40;
+  }
+  .node-group-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .node-full .node-group-title { color: #6ab4ff; }
+  .node-light .node-group-title { color: #8080c0; }
+  .node-group-desc {
+    font-size: 0.7rem;
+    color: #5a6a80;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .node-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .node-chip {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: 'Consolas', 'SF Mono', monospace;
+  }
+  .node-full .node-chip {
+    background: #132238;
+    border: 1px solid #1e3a5f;
+    color: #6ab4ff;
+  }
+  .node-light .node-chip {
+    background: #12122a;
+    border: 1px dashed #2a2a40;
+    color: #8080c0;
+  }
+  .node-chip-sub {
+    font-size: 0.58rem;
+    font-weight: 400;
+    color: #5a6a80;
+    display: block;
+    margin-top: 2px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  /* Signals section */
+  .signals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .signal-card {
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #0e1a14;
+    border: 1px solid #1e3a2e;
+    text-align: center;
+  }
+  .signal-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #50e0a0;
+    margin-bottom: 4px;
+  }
+  .signal-type {
+    font-size: 0.58rem;
+    color: #3a6a50;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .signal-direction {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .dir-accel { background: #1a2a1a; color: #60c060; border: 1px solid #2a4a2a; }
+  .dir-decel { background: #2a1a1a; color: #c06060; border: 1px solid #4a2a2a; }
+  .signal-lead {
+    font-size: 0.6rem;
+    color: #4a6a5a;
+    margin-top: 4px;
+  }
+
+  /* Interaction map */
+  .interaction-card {
+    padding: 14px 18px;
+    border-radius: 8px;
+    background: #0a1510;
+    border: 1px solid #1a3025;
+    margin-bottom: 8px;
+  }
+  .interaction-formula {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #50e0a0;
+    margin-bottom: 4px;
+  }
+  .interaction-result {
+    font-size: 0.68rem;
+    color: #6a8a7a;
+    line-height: 1.5;
+  }
+
+  /* Debates */
+  .debate-card {
+    padding: 18px 22px;
+    border-radius: 10px;
+    background: #1a150d;
+    border: 1px solid #3a2e1e;
+    margin-bottom: 12px;
+  }
+  .debate-question {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #f0b850;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .debate-sides {
+    display: flex;
+    gap: 14px;
+  }
+  .debate-side {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.68rem;
+    line-height: 1.5;
+  }
+  .side-a {
+    background: #2a1a18;
+    border: 1px solid #4a2a22;
+    color: #c09080;
+  }
+  .side-b {
+    background: #1a2a18;
+    border: 1px solid #2a4a22;
+    color: #80c090;
+  }
+  .side-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .side-a .side-label { color: #e06060; }
+  .side-b .side-label { color: #60c060; }
+  .debate-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 0.62rem;
+    color: #6a5a40;
+  }
+  .debate-meta strong { color: #a09060; }
+
+  /* Pipeline injection */
+  .injection-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .injection-point {
+    flex: 1;
+    min-width: 220px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .inject-extraction {
+    background: #132238;
+    border: 1px solid #1e3a5f;
+  }
+  .inject-perspectives {
+    background: #231c10;
+    border: 1px solid #3a2e1e;
+  }
+  .inject-synthesis {
+    background: #102a1e;
+    border: 1px solid #1e3a2e;
+  }
+  .injection-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .inject-extraction .injection-title { color: #6ab4ff; }
+  .inject-perspectives .injection-title { color: #f0b850; }
+  .inject-synthesis .injection-title { color: #50e0a0; }
+  .injection-what {
+    font-size: 0.68rem;
+    color: #7a8ba8;
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  .injection-detail {
+    font-size: 0.62rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .inject-extraction .injection-detail { background: #0d1520; color: #5090c0; border: 1px solid #1a3050; }
+  .inject-perspectives .injection-detail { background: #1a1508; color: #c09030; border: 1px solid #3a2e1a; }
+  .inject-synthesis .injection-detail { background: #0a1510; color: #40b080; border: 1px solid #1a3a2a; }
+
+  /* Design decisions */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  .decision-card {
+    padding: 20px 24px;
+    border-radius: 10px;
+    background: #140e0e;
+    border: 1px solid #2a1a1a;
+    position: relative;
+    overflow: hidden;
+  }
+  .decision-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: #c05050;
+    border-radius: 3px 0 0 3px;
+  }
+  .decision-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #e08080;
+    margin-bottom: 6px;
+  }
+  .decision-naive {
+    font-size: 0.7rem;
+    color: #5a4a4a;
+    margin-bottom: 8px;
+    padding-left: 12px;
+    border-left: 2px solid #2a1a1a;
+    font-style: italic;
+  }
+  .decision-real {
+    font-size: 0.72rem;
+    color: #9a7a7a;
+    line-height: 1.5;
+  }
+  .decision-real strong { color: #c0a0a0; font-weight: 600; }
+
+  /* Update modes */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 800px) {
+    .mode-grid { grid-template-columns: 1fr; }
+    .debate-sides { flex-direction: column; }
+    .chain-container { flex-direction: column; }
+    .chain-layer { min-height: auto; border-radius: 8px !important; }
+    .chain-layer:not(:last-child)::after { display: none; }
+  }
+  .mode-card {
+    padding: 18px 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .mode-structural {
+    background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%);
+    border: 1px solid #1e3a5f;
+  }
+  .mode-brief {
+    background: linear-gradient(135deg, #1a150d 0%, #201a11 100%);
+    border: 1px solid #3a2e1e;
+  }
+  .mode-earnings {
+    background: linear-gradient(135deg, #0d1a14 0%, #111f18 100%);
+    border: 1px solid #1e3a2e;
+  }
+  .mode-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .mode-structural .mode-title { color: #6ab4ff; }
+  .mode-brief .mode-title { color: #f0b850; }
+  .mode-earnings .mode-title { color: #50e0a0; }
+  .mode-cmd {
+    font-size: 0.68rem;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  .mode-structural .mode-cmd { background: #0d1520; color: #5090c0; border: 1px solid #1a3050; }
+  .mode-brief .mode-cmd { background: #1a1508; color: #c09030; border: 1px solid #3a2e1a; }
+  .mode-earnings .mode-cmd { background: #0a1510; color: #40b080; border: 1px solid #1a3a2a; }
+  .mode-desc {
+    font-size: 0.7rem;
+    color: #7a8ba8;
+    line-height: 1.5;
+    text-align: left;
+  }
+  .mode-feeds {
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Data Center Vault</h1>
+<p class="subtitle">Structured industry knowledge that teaches the AI HOW to think about data centers &mdash; value chain position, competitive dynamics, sub-segment KPIs, and leading indicators. Not current data. Durable analytical frameworks.</p>
+
+<div class="container">
+
+<!-- VALUE CHAIN -->
+<div class="section-header">Value Chain &mdash; 5 Layers</div>
+<div class="chain-container">
+  <div class="chain-layer chain-l1">
+    <div class="chain-number">Layer 1</div>
+    <div class="chain-name">Compute Silicon</div>
+    <div class="chain-companies">NVDA</div>
+    <div class="chain-margin">OM 20&ndash;30%</div>
+  </div>
+  <div class="chain-layer chain-l2">
+    <div class="chain-number">Layer 2</div>
+    <div class="chain-name">Infrastructure Enablers</div>
+    <div class="chain-companies">LITE, COHR</div>
+    <div class="chain-margin">OM 5&ndash;25%</div>
+  </div>
+  <div class="chain-layer chain-l3">
+    <div class="chain-number">Layer 3</div>
+    <div class="chain-name">Colocation &amp; REITs</div>
+    <div class="chain-companies">EQIX</div>
+    <div class="chain-margin">OM 10&ndash;20%</div>
+  </div>
+  <div class="chain-layer chain-l4">
+    <div class="chain-number">Layer 4</div>
+    <div class="chain-name">Neoclouds / GPU-as-a-Service</div>
+    <div class="chain-companies">IREN, NBIS, CoreWeave</div>
+    <div class="chain-margin">OM 5&ndash;20%</div>
+  </div>
+  <div class="chain-layer chain-l5">
+    <div class="chain-number">Layer 5</div>
+    <div class="chain-name">Hyperscale Platforms</div>
+    <div class="chain-companies">MSFT</div>
+    <div class="chain-margin">OM 25&ndash;35%</div>
+  </div>
+</div>
+<div class="chain-flow-label">Revenue flows from end-user AI services (Layer 5) up through infrastructure (Layer 3&ndash;4) to silicon and components (Layer 1&ndash;2)</div>
+
+<!-- COMPANY NODES -->
+<div class="nodes-container">
+  <div class="node-group node-full">
+    <div class="node-group-title">Full Nodes &mdash; Primary Industry</div>
+    <div class="node-group-desc">Complete analytical coverage: business model, competitive position, financial profile, key relationships, industry-specific notes. These companies LIVE in the DC industry.</div>
+    <div class="node-list">
+      <div class="node-chip">IREN<span class="node-chip-sub">L4 Neocloud</span></div>
+      <div class="node-chip">NBIS<span class="node-chip-sub">L4 Neocloud</span></div>
+      <div class="node-chip">CoreWeave<span class="node-chip-sub">L4 GPU Cloud</span></div>
+      <div class="node-chip">EQIX<span class="node-chip-sub">L3 Colocation</span></div>
+    </div>
+  </div>
+  <div class="node-group node-light">
+    <div class="node-group-title">Light Nodes &mdash; Cross-Industry Relevance</div>
+    <div class="node-group-desc">Relationship context only, no financials. These companies VISIT this industry &mdash; their primary business is elsewhere, but they matter here.</div>
+    <div class="node-list">
+      <div class="node-chip">LITE<span class="node-chip-sub">L2 Optics</span></div>
+      <div class="node-chip">COHR<span class="node-chip-sub">L2 Optics</span></div>
+      <div class="node-chip">NVDA<span class="node-chip-sub">L1 Silicon</span></div>
+      <div class="node-chip">MSFT<span class="node-chip-sub">L5 Hyperscaler</span></div>
+      <div class="node-chip">ENPH<span class="node-chip-sub">Grid/VPP</span></div>
+      <div class="node-chip">RIOT<span class="node-chip-sub">L4 Pivot</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- VAULT FILES -->
+<div class="section-header">Vault Files &mdash; 7 Structural Knowledge Files + Company Nodes</div>
+<div class="file-grid">
+  <div class="file-card file-card-structural">
+    <div class="file-tag tag-feeds">Feeds Pipeline</div>
+    <div class="file-name">_overview.md</div>
+    <div class="file-purpose">Industry structure, sub-segment distinction, market sizing, key uncertainties. Prevents the AI from treating EQIX and IREN as the same type of business.</div>
+    <div class="file-example">5 sub-segments defined: GPU Cloud, Colocation, Hyperscale Build-to-Suit, Edge/Modular, AI Supply Chain &mdash; each with distinct revenue model and KPIs</div>
+  </div>
+  <div class="file-card file-card-structural">
+    <div class="file-tag tag-feeds">Feeds Pipeline</div>
+    <div class="file-name">_value_chain.md</div>
+    <div class="file-purpose">Layer definitions, profit pools with operating margin ranges, cross-layer dependencies with lead times. Tells the AI WHERE in the chain money flows and what squeezes margins.</div>
+    <div class="file-example">"Layer 5 capex raised &rarr; Layer 4 GPU procurement accelerates &rarr; Layer 1 allocation tightens (3&ndash;6 months)"</div>
+  </div>
+  <div class="file-card file-card-analytical">
+    <div class="file-tag tag-feeds">Feeds Pipeline</div>
+    <div class="file-name">_demand_composition.md</div>
+    <div class="file-purpose">Demand segmentation axes, composition shift mechanisms, company exposure map, and Revenue Bridge decomposition guide. Tells perspectives WHAT to decompose and what questions to ask.</div>
+    <div class="file-example">"For COHR/LITE: does the model separate rack-count growth from per-rack bandwidth density growth?"</div>
+  </div>
+  <div class="file-card file-card-analytical">
+    <div class="file-tag tag-feeds">Feeds Pipeline</div>
+    <div class="file-name">_debates.md</div>
+    <div class="file-purpose">3 key industry debates with both sides at equal evidence quality, market lean, resolution timeline, affected companies. Forces perspectives to position relative to real debates.</div>
+    <div class="file-example">Debate 1: Power constraints force deceleration? Debate 2: Hyperscaler self-build vs colocation? Debate 3: Component premiums sustained or commoditized?</div>
+  </div>
+  <div class="file-card file-card-signal">
+    <div class="file-tag tag-partial">Partial Feed</div>
+    <div class="file-name">_signals.md</div>
+    <div class="file-purpose">5 leading indicators with current direction, lead time, and a signal interaction map showing what COMBINATIONS mean. Directions hidden from perspectives, visible to synthesis.</div>
+    <div class="file-example">"CapEx Accelerating + Grid Decelerating = site scarcity premium for operators with pre-secured power"</div>
+  </div>
+  <div class="file-card file-card-structural">
+    <div class="file-tag tag-feeds">Feeds Pipeline</div>
+    <div class="file-name">_kpis.md</div>
+    <div class="file-purpose">Sub-segment-specific metrics with benchmark thresholds. Different KPIs for GPU Cloud vs Colocation vs Optical. Includes cross-sub-segment comparison warnings.</div>
+    <div class="file-example">GPU Cloud: utilization &gt;85% = healthy. Colocation: occupancy &gt;90% = healthy. Applying colo occupancy to CoreWeave = meaningless.</div>
+  </div>
+  <div class="file-card file-card-meta">
+    <div class="file-tag tag-no-feed">Does Not Feed Pipeline</div>
+    <div class="file-name">_changelog.md</div>
+    <div class="file-purpose">Timestamped material updates. Enables staleness detection &mdash; "what changed since last run?" Not consumed by the pipeline.</div>
+    <div class="file-example">2026-02-25: Initial population. 2026-03-01: Enriched value chain with profit pool operating margin ranges.</div>
+  </div>
+  <div class="file-card file-card-meta">
+    <div class="file-tag tag-no-feed">PM Only &mdash; Does Not Feed Pipeline</div>
+    <div class="file-name">_brief.md</div>
+    <div class="file-purpose">Weekly current-state industry snapshot for PM sector allocation. Material developments, ticker triggers, Company Event Flags, migration candidates. Refreshed with date-range scoping.</div>
+    <div class="file-example">Material Development #1: NVIDIA $2B investments in NBIS and CoreWeave... Company Event Flags: NBIS (NVIDIA $2B, Mar 12), RIOT (AMD 75MW, Mar 12).</div>
+  </div>
+</div>
+
+<!-- SIGNALS -->
+<div class="section-header">Leading Indicators &mdash; 5 Signals</div>
+<div class="signals-grid">
+  <div class="signal-card">
+    <div class="signal-name">Hyperscaler CapEx Cadence</div>
+    <div class="signal-type">Demand</div>
+    <div class="signal-direction dir-accel">Accelerating</div>
+    <div class="signal-lead">12-month lead &bull; Affects L1, L2, L3</div>
+  </div>
+  <div class="signal-card">
+    <div class="signal-name">Grid Power Availability</div>
+    <div class="signal-type">Supply Constraint</div>
+    <div class="signal-direction dir-decel">Decelerating</div>
+    <div class="signal-lead">18-month lead &bull; Affects L2, L3</div>
+  </div>
+  <div class="signal-card">
+    <div class="signal-name">AI Rack Density</div>
+    <div class="signal-type">Technology</div>
+    <div class="signal-direction dir-accel">Accelerating</div>
+    <div class="signal-lead">9-month lead &bull; Affects L1, L2</div>
+  </div>
+  <div class="signal-card">
+    <div class="signal-name">Colocation Occupancy</div>
+    <div class="signal-type">Pricing</div>
+    <div class="signal-direction dir-accel">Accelerating</div>
+    <div class="signal-lead">Coincident &bull; Affects L2, L3</div>
+  </div>
+  <div class="signal-card">
+    <div class="signal-name">Liquid Cooling Adoption</div>
+    <div class="signal-type">Technology</div>
+    <div class="signal-direction dir-accel">Accelerating</div>
+    <div class="signal-lead">6-month lead &bull; Affects L2, L3</div>
+  </div>
+</div>
+
+<div style="margin-top: 16px;">
+  <div class="interaction-card">
+    <div class="interaction-formula">CapEx Accelerating + Grid Power Decelerating</div>
+    <div class="interaction-result">= Site scarcity premium accrues to Layer 3 operators with pre-secured power. Greenfield timelines lengthen, advantaging established operators over new entrants.</div>
+  </div>
+  <div class="interaction-card">
+    <div class="interaction-formula">Rack Density Accelerating + Liquid Cooling Accelerating</div>
+    <div class="interaction-result">= Structural revenue expansion for Layer 2 cooling and optical interconnect suppliers (COHR, LITE). Permanently higher O&amp;M cost base creates recurring demand.</div>
+  </div>
+  <div class="interaction-card">
+    <div class="interaction-formula">Three-Signal Squeeze: CapEx Up + Occupancy Up + Grid Down</div>
+    <div class="interaction-result">= Demand outpaces deliverable supply in primary markets. Requirements pushed to secondary hubs. Rewards operators with power-secured alternative sites (IREN, NBIS).</div>
+  </div>
+</div>
+
+<!-- KEY DEBATES -->
+<div class="section-header">Key Industry Debates &mdash; Both Sides, Equal Evidence</div>
+
+<div class="debate-card">
+  <div class="debate-question">1. Will power constraints force structural deceleration before 2028?</div>
+  <div class="debate-sides">
+    <div class="debate-side side-a">
+      <div class="side-label">Constraints Are Binding</div>
+      Occupancy 85% &rarr; 95%+, grid queues multi-year, 100kW racks increase complexity and capital intensity
+    </div>
+    <div class="debate-side side-b">
+      <div class="side-label">Growth Continues</div>
+      100 GW planned 2026&ndash;2030, $5.2T committed, behind-the-meter generation + nuclear bypassing grid
+    </div>
+  </div>
+  <div class="debate-meta"><strong>Market lean:</strong> Growth continues &nbsp;&bull;&nbsp; <strong>Resolution:</strong> 2027&ndash;28 grid approvals + capex guidance</div>
+</div>
+
+<div class="debate-card">
+  <div class="debate-question">2. Will hyperscalers self-build or will colocation operators capture AI demand?</div>
+  <div class="debate-sides">
+    <div class="debate-side side-a">
+      <div class="side-label">Self-Build Dominates</div>
+      70% US DC capacity controlled by hyperscalers, modular 60&ndash;80% prefab, end-to-end integration needed
+    </div>
+    <div class="debate-side side-b">
+      <div class="side-label">Colocation Accelerates</div>
+      Record colo deals in 2025&ndash;26, APAC colo 19% CAGR, hyperscalers lease when build timelines too long
+    </div>
+  </div>
+  <div class="debate-meta"><strong>Market lean:</strong> Self-build for primary AI &nbsp;&bull;&nbsp; <strong>Resolution:</strong> H1 2026&ndash;27 lease-vs-build disclosures</div>
+</div>
+
+<div class="debate-card">
+  <div class="debate-question">3. Will cooling &amp; optics suppliers sustain premium margins or face commoditization?</div>
+  <div class="debate-sides">
+    <div class="debate-side side-a">
+      <div class="side-label">Commoditization Risk</div>
+      Hyperscaler standardization, modular designs compress differentiation, PUE targets pressure costs
+    </div>
+    <div class="debate-side side-b">
+      <div class="side-label">Premiums Sustained</div>
+      Liquid cooling mandatory at 100kW+, 800G/1.6T optics in shortage through 2027, limited qualified suppliers
+    </div>
+  </div>
+  <div class="debate-meta"><strong>Market lean:</strong> Premiums sustained near-term &nbsp;&bull;&nbsp; <strong>Resolution:</strong> 2026&ndash;27 multi-sourcing cycles</div>
+</div>
+
+<!-- PIPELINE INJECTION -->
+<div class="section-header">Pipeline Injection &mdash; 3 Points, Different Content at Each</div>
+<div class="injection-row">
+  <div class="injection-point inject-extraction">
+    <div class="injection-title">Extraction</div>
+    <div class="injection-what">Full vault context. Helps the AI identify what matters in raw data.</div>
+    <div class="injection-detail">Everything included</div>
+  </div>
+  <div class="injection-point inject-perspectives">
+    <div class="injection-title">Perspectives</div>
+    <div class="injection-what">Vault frameworks minus signal directions. Prevents anchoring on current trends.</div>
+    <div class="injection-detail">No signal directions</div>
+  </div>
+  <div class="injection-point inject-synthesis">
+    <div class="injection-title">Synthesis</div>
+    <div class="injection-what">Full vault including signal directions. Safe to see after perspectives are built.</div>
+    <div class="injection-detail">Everything included</div>
+  </div>
+</div>
+
+<!-- UPDATE MODES -->
+<div class="section-header">Update Modes &mdash; How the Vault Stays Current</div>
+<div class="mode-grid" style="grid-template-columns: repeat(2, 1fr);">
+  <div class="mode-card mode-structural">
+    <div class="mode-title">Structural Refresh</div>
+    <div class="mode-cmd">--update</div>
+    <div class="mode-desc">Quarterly. Reads existing vault, diffs against current research. Writes ONLY material changes. Date-range scoped since last_updated. <strong style="color:#6ab4ff;">Stages only &mdash; human reviews before commit.</strong></div>
+    <div class="mode-feeds"><span class="file-tag tag-feeds">Updates pipeline-facing files</span></div>
+  </div>
+  <div class="mode-card mode-brief">
+    <div class="mode-title">Industry Brief</div>
+    <div class="mode-cmd">--brief-only</div>
+    <div class="mode-desc">Weekly. Current-state snapshot to _brief.md with material developments, ticker triggers, Company Event Flags, and migration candidates. Date-range scoped. <strong style="color:#f0b850;">Auto-commits.</strong></div>
+    <div class="mode-feeds"><span class="file-tag tag-no-feed">Does NOT feed pipeline</span></div>
+  </div>
+  <div class="mode-card mode-earnings">
+    <div class="mode-title">Earnings Intelligence</div>
+    <div class="mode-cmd">--earnings NBIS</div>
+    <div class="mode-desc">After each report. Extracts management guidance, Q&amp;A with [DEFLECTION] flags, sequential changes (STARTED/STOPPED/SHIFTED). 2 queries for full nodes, 1 for light. Consolidates prior Recent Developments. <strong style="color:#50e0a0;">Auto-commits.</strong></div>
+    <div class="mode-feeds"><span class="file-tag tag-feeds">Feeds pipeline via company node</span></div>
+  </div>
+  <div class="mode-card" style="background: linear-gradient(135deg, #1a0d1a 0%, #201120 100%); border: 1px solid #3a1e3a;">
+    <div class="mode-title" style="color: #b080e0;">Material Event</div>
+    <div class="mode-cmd" style="background: #150a15; color: #a060a0; border: 1px solid #2a1a2a;">--event NBIS "NVIDIA $2B investment"</div>
+    <div class="mode-desc">Ad-hoc. Appends timestamped entry to node's Recent Developments. One targeted query. Propagates filtered entries to light nodes in other vaults. <strong style="color:#b080e0;">Auto-commits.</strong></div>
+    <div class="mode-feeds"><span class="file-tag tag-feeds">Feeds pipeline via company node</span></div>
+  </div>
+</div>
+
+<!-- DESIGN DECISIONS -->
+<div class="section-header">Design Decisions &mdash; Why the Vault Works This Way</div>
+<div class="decision-grid">
+  <div class="decision-card">
+    <div class="decision-title">No Current-State Data in the Vault</div>
+    <div class="decision-naive">Naive approach: "Put everything in one place &mdash; industry structure, current trends, latest numbers"</div>
+    <div class="decision-real">Current data <strong>biases the AI</strong>. In A/B testing, perspectives parroted vault numbers instead of building their own demand model. Current data also <strong>goes stale</strong> within 90 days &mdash; the AI can't tell the difference between a durable structural insight and a dated figure. The pipeline's own data gathering provides fresh current data every run. The vault teaches HOW to think; the pipeline provides WHAT is happening.</div>
+  </div>
+  <div class="decision-card">
+    <div class="decision-title">Signal Directions Hidden from Perspectives</div>
+    <div class="decision-naive">Naive approach: "Show perspectives everything so they have full context"</div>
+    <div class="decision-real">If the bull perspective sees "ACCELERATING" on 4 of 5 signals, it <strong>anchors on the direction instead of reasoning independently</strong>. Perspectives get the signal definitions and interaction map (the analytical framework) but NOT current direction. Synthesis sees everything &mdash; it's post-perspective, so anchoring risk is gone. <strong>Frameworks feed analysis. Conclusions feed synthesis.</strong></div>
+  </div>
+  <div class="decision-card">
+    <div class="decision-title">Light Nodes Have No Financial Metrics</div>
+    <div class="decision-naive">Naive approach: "Include financials for every company in the vault"</div>
+    <div class="decision-real">Light nodes represent companies whose primary business is elsewhere (LITE's home is optical/photonics, not data centers). Including DC-vault financials risks <strong>stale or conflicting numbers</strong> with the home vault. Financial data is computed from XBRL at runtime &mdash; always fresh, always consistent. Light nodes carry only <strong>relationship context</strong>: why does this company matter to THIS industry?</div>
+  </div>
+  <div class="decision-card">
+    <div class="decision-title">Both Sides of Every Debate at Equal Quality</div>
+    <div class="decision-naive">Naive approach: "Present the consensus view with some counterpoints"</div>
+    <div class="decision-real">If Side A has three sourced data points and Side B has hand-waving, the vault has <strong>pre-biased the analysis</strong>. Both sides must have comparable evidence quality. The perspective agents position their thesis relative to the debate &mdash; if one side is weak, the AI skips it. We include <strong>market lean</strong> separately so the analyst knows where consensus sits without the vault's evidence quality doing the arguing.</div>
+  </div>
+  <div class="decision-card">
+    <div class="decision-title">Sub-Segment KPIs with Cross-Application Warnings</div>
+    <div class="decision-naive">Naive approach: "Define standard KPIs for the data center industry"</div>
+    <div class="decision-real">"Data center" is not one business. GPU utilization rate is meaningless for EQIX. Occupancy rate is meaningless for CoreWeave. The vault defines <strong>separate KPI sets per sub-segment</strong> and explicitly warns which metrics produce false comparisons when cross-applied. Without this, the AI defaults to generic "data center metrics" &mdash; usually colocation KPIs applied to everything.</div>
+  </div>
+  <div class="decision-card">
+    <div class="decision-title">[DEFLECTION] Flagging in Earnings Intelligence</div>
+    <div class="decision-naive">Naive approach: "Summarize what management said on the earnings call"</div>
+    <div class="decision-real">Management hedging and evasion is a <strong>first-class analytical signal</strong>, not noise to filter out. Chicago Booth research: euphemisms and Q&amp;A deflection predict negative outcomes even after controlling for reported financials. The vault flags [DEFLECTION] when management absorbs a question with qualitative signals instead of data &mdash; turning spin into a <strong>trackable pattern</strong> the analyst can monitor quarter to quarter.</div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

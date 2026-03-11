@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Industry Knowledge Vault — Template Guide</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0a0e17;
+    color: #e0e6ed;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #7a8ba8;
+    margin-bottom: 50px;
+    font-weight: 400;
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Section headers */
+  .section-header {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: #7a8ba8;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+    margin-top: 55px;
+  }
+  .section-header:first-of-type { margin-top: 0; }
+  .section-sub {
+    font-size: 0.78rem;
+    color: #5a6a80;
+    margin-top: -12px;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  /* Core concept banner */
+  .concept-banner {
+    padding: 24px 30px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%);
+    border: 1px solid #1e3a5f;
+    margin-bottom: 30px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .concept-icon {
+    font-size: 2rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .concept-text h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #6ab4ff;
+    margin-bottom: 6px;
+  }
+  .concept-text p {
+    font-size: 0.8rem;
+    color: #8a9ab5;
+    line-height: 1.6;
+  }
+  .concept-text strong { color: #c0d0e0; }
+
+  /* Directory tree */
+  .tree-box {
+    padding: 22px 28px;
+    border-radius: 12px;
+    background: #0a0e17;
+    border: 1px solid #1a2235;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 2;
+    color: #7a8ba8;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  .tree-box .dir { color: #6ab4ff; font-weight: 600; }
+  .tree-box .structural { color: #4a9eff; }
+  .tree-box .analytical { color: #f0b850; }
+  .tree-box .signal { color: #50e0a0; }
+  .tree-box .meta { color: #7a8ba8; }
+  .tree-box .full-n { color: #6ab4ff; }
+  .tree-box .light-n { color: #8080c0; }
+  .tree-comment { color: #3a4a60; font-style: italic; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  /* File detail cards */
+  .file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 16px;
+  }
+  .file-card {
+    padding: 20px 24px;
+    border-radius: 12px;
+    background: #0e1320;
+    border: 1px solid #1a2235;
+    position: relative;
+    overflow: hidden;
+  }
+  .file-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    border-radius: 3px 0 0 3px;
+  }
+  .fc-structural::before { background: #4a9eff; }
+  .fc-analytical::before { background: #f0a030; }
+  .fc-signal::before { background: #40d090; }
+  .fc-meta::before { background: #5a6a80; }
+  .fc-kpi::before { background: #b080e0; }
+
+  .file-card .fname {
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    margin-bottom: 4px;
+  }
+  .fc-structural .fname { color: #6ab4ff; }
+  .fc-analytical .fname { color: #f0b850; }
+  .fc-signal .fname { color: #50e0a0; }
+  .fc-meta .fname { color: #7a8ba8; }
+  .fc-kpi .fname { color: #b080e0; }
+
+  .file-card .fq {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #5a6a80;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .file-card .fdesc {
+    font-size: 0.75rem;
+    color: #8a9ab5;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .file-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .file-card li {
+    font-size: 0.72rem;
+    color: #7a8ba8;
+    line-height: 1.5;
+    padding: 3px 0 3px 14px;
+    position: relative;
+  }
+  .file-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #2a3a50;
+  }
+  .file-card .example-box {
+    font-size: 0.68rem;
+    color: #5a6a80;
+    padding: 10px 12px;
+    background: #0a0e17;
+    border-radius: 8px;
+    border: 1px solid #151a25;
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+  .example-box strong { color: #7a8ba8; }
+  .file-tag {
+    display: inline-block;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+  }
+  .tag-pipeline { background: #1a2a1a; color: #50c050; border: 1px solid #2a3a2a; }
+  .tag-synthesis { background: #2a2a1a; color: #c0b050; border: 1px solid #3a3a2a; }
+  .tag-reference { background: #1a1a2a; color: #7070c0; border: 1px solid #2a2a3a; }
+
+  /* Node comparison */
+  .node-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 16px;
+  }
+  @media (max-width: 900px) {
+    .node-compare { grid-template-columns: 1fr; }
+    .file-grid { grid-template-columns: 1fr; }
+  }
+  .node-panel {
+    padding: 24px 28px;
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .node-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+  .node-full {
+    background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%);
+    border: 1px solid #1e3a5f;
+  }
+  .node-full::before { background: linear-gradient(90deg, #4a9eff, #2070c0); }
+  .node-light {
+    background: linear-gradient(135deg, #0e0e1a 0%, #121220 100%);
+    border: 1px dashed #2a2a50;
+  }
+  .node-light::before { background: linear-gradient(90deg, #8080c0, #5050a0); }
+
+  .node-panel .node-type-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .node-full .node-type-label { color: #4a9eff; }
+  .node-light .node-type-label { color: #8080c0; }
+
+  .node-panel .node-ticker {
+    font-size: 1.3rem;
+    font-weight: 600;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    margin-bottom: 2px;
+  }
+  .node-full .node-ticker { color: #6ab4ff; }
+  .node-light .node-ticker { color: #9090d0; }
+
+  .node-panel .node-name {
+    font-size: 0.78rem;
+    color: #5a6a80;
+    margin-bottom: 14px;
+  }
+
+  .node-section {
+    margin-bottom: 14px;
+  }
+  .node-section-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #1a2235;
+  }
+  .node-full .node-section-title { color: #4a7ab0; }
+  .node-light .node-section-title { color: #6060a0; }
+
+  .node-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  .node-section li {
+    font-size: 0.72rem;
+    color: #8a9ab5;
+    line-height: 1.55;
+    padding: 3px 0 3px 14px;
+    position: relative;
+  }
+  .node-section li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+  .node-full li::before { background: #1e3a5f; }
+  .node-light li::before { background: #2a2a50; }
+
+  .node-section .field-row {
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.72rem;
+    align-items: baseline;
+  }
+  .field-label {
+    color: #5a6a80;
+    min-width: 100px;
+    flex-shrink: 0;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    font-size: 0.68rem;
+  }
+  .field-value {
+    color: #8a9ab5;
+  }
+  .field-value.highlight { color: #c0d0e0; }
+
+  .node-quote {
+    font-size: 0.7rem;
+    color: #6a7a90;
+    line-height: 1.6;
+    padding: 10px 14px;
+    background: #0a0e17;
+    border-radius: 8px;
+    border-left: 3px solid #2a3a50;
+    margin-top: 6px;
+    font-style: italic;
+  }
+  .node-light .node-quote { border-left-color: #3a3a60; }
+
+  .tag-unverified {
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: #c09030;
+    background: #2a2010;
+    border: 1px solid #3a3020;
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Side-by-side anatomy */
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 16px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #1a2235;
+  }
+  @media (max-width: 900px) { .anatomy-grid { grid-template-columns: 1fr; } }
+  .anatomy-col {
+    padding: 20px 24px;
+  }
+  .anatomy-full { background: #0d1520; border-right: 1px solid #1a2235; }
+  .anatomy-light { background: #0e0e16; }
+  .anatomy-col h4 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #1a2235;
+  }
+  .anatomy-full h4 { color: #4a9eff; }
+  .anatomy-light h4 { color: #8080c0; }
+  .anatomy-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 0.72rem;
+  }
+  .anatomy-check {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+  .check-yes { background: #1a2a1a; color: #50c050; border: 1px solid #2a3a2a; }
+  .check-no { background: #1a1a1a; color: #3a3a3a; border: 1px solid #2a2a2a; }
+  .check-special { background: #1a1a2a; color: #7070c0; border: 1px solid #2a2a3a; }
+  .anatomy-label {
+    color: #8a9ab5;
+    line-height: 1.4;
+  }
+  .anatomy-label .dim { color: #5a6a80; }
+
+  /* Design decisions */
+  .decisions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 16px;
+  }
+  .decision-card {
+    padding: 20px 24px;
+    border-radius: 12px;
+    background: #0e1320;
+    border: 1px solid #1a2235;
+  }
+  .decision-card h4 {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #c0d0e0;
+    margin-bottom: 6px;
+  }
+  .decision-card .decision-why {
+    font-size: 0.72rem;
+    color: #5a6a80;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .decision-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .decision-card li {
+    font-size: 0.72rem;
+    color: #8a9ab5;
+    line-height: 1.55;
+    padding: 3px 0 3px 14px;
+    position: relative;
+  }
+  .decision-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #2a3a50;
+  }
+
+  /* Pipeline injection diagram */
+  .injection-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .injection-stage {
+    padding: 14px 18px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 140px;
+  }
+  .inj-vault {
+    background: linear-gradient(135deg, #1a150d 0%, #201a11 100%);
+    border: 1px solid #3a2e1e;
+  }
+  .inj-pipeline {
+    background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%);
+    border: 1px solid #1e3a5f;
+  }
+  .inj-output {
+    background: linear-gradient(135deg, #0d1a14 0%, #111f18 100%);
+    border: 1px solid #1e3a2e;
+  }
+  .injection-stage .inj-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .inj-vault .inj-label { color: #f0b850; }
+  .inj-pipeline .inj-label { color: #6ab4ff; }
+  .inj-output .inj-label { color: #50e0a0; }
+  .injection-stage .inj-desc {
+    font-size: 0.65rem;
+    color: #7a8ba8;
+    line-height: 1.4;
+  }
+  .inj-arrow {
+    font-size: 1.2rem;
+    color: #2a3a50;
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+
+  /* Update modes */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 900px) { .mode-grid { grid-template-columns: 1fr; } }
+  .mode-card {
+    padding: 20px 22px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mode-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    border-radius: 3px 0 0 3px;
+  }
+  .mode-structural { background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%); border: 1px solid #1e3a5f; }
+  .mode-structural::before { background: #4a9eff; }
+  .mode-brief { background: linear-gradient(135deg, #1a150d 0%, #201a11 100%); border: 1px solid #3a2e1e; }
+  .mode-brief::before { background: #f0a030; }
+  .mode-earnings { background: linear-gradient(135deg, #0d1a14 0%, #111f18 100%); border: 1px solid #1e3a2e; }
+  .mode-earnings::before { background: #40d090; }
+  .mode-event { background: linear-gradient(135deg, #1a0d1a 0%, #201120 100%); border: 1px solid #3a1e3a; }
+  .mode-event::before { background: #b080e0; }
+  .mode-card .mode-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .mode-structural .mode-title { color: #6ab4ff; }
+  .mode-brief .mode-title { color: #f0b850; }
+  .mode-earnings .mode-title { color: #50e0a0; }
+  .mode-event .mode-title { color: #b080e0; }
+  .mode-card .mode-cmd {
+    font-size: 0.7rem;
+    font-family: 'Consolas', 'SF Mono', monospace;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+  .mode-structural .mode-cmd { background: #0d1520; color: #5090c0; border: 1px solid #1a3050; }
+  .mode-brief .mode-cmd { background: #1a1508; color: #c09030; border: 1px solid #3a2e1a; }
+  .mode-earnings .mode-cmd { background: #0a1510; color: #40b080; border: 1px solid #1a3a2a; }
+  .mode-event .mode-cmd { background: #150a15; color: #a060a0; border: 1px solid #2a1a2a; }
+  .mode-card .mode-desc {
+    font-size: 0.72rem;
+    color: #8a9ab5;
+    line-height: 1.6;
+  }
+  .mode-card .mode-desc strong { color: #c0d0e0; }
+  .mode-tags {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .mode-tag {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .mt-pipeline { background: #1a2a1a; color: #50c050; border: 1px solid #2a3a2a; }
+  .mt-pm { background: #2a2a1a; color: #c0b050; border: 1px solid #3a3a2a; }
+  .mt-autocommit { background: #1a1a2a; color: #7070c0; border: 1px solid #2a2a3a; }
+  .mt-manual { background: #2a1a1a; color: #c07050; border: 1px solid #3a2a2a; }
+
+  /* Separator */
+  .sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #1a2a3a, transparent);
+    margin: 40px 0 10px;
+  }
+
+  /* Summary banner */
+  .summary-banner {
+    margin-top: 40px;
+    padding: 28px 32px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0d1a14 0%, #111f18 100%);
+    border: 1px solid #1e3a2e;
+  }
+  .summary-banner h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #50e0a0;
+    margin-bottom: 12px;
+  }
+  .summary-banner ul {
+    list-style: none;
+    padding: 0;
+  }
+  .summary-banner li {
+    font-size: 0.78rem;
+    color: #8a9ab5;
+    line-height: 1.6;
+    padding: 4px 0 4px 18px;
+    position: relative;
+  }
+  .summary-banner li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid #40a070;
+    background: transparent;
+  }
+  .summary-banner li strong { color: #c0e0d0; }
+
+  /* Data source tables */
+  .source-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    font-size: 0.85rem;
+  }
+  .source-table caption {
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #c0d0e0;
+    padding: 10px 14px;
+    background: rgba(30, 58, 95, 0.3);
+    border-radius: 10px 10px 0 0;
+    border: 1px solid #1e3a5f;
+    border-bottom: none;
+  }
+  .source-table th {
+    text-align: left;
+    padding: 10px 14px;
+    background: rgba(15, 25, 40, 0.8);
+    color: #7a8ba8;
+    font-weight: 500;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid #1a2a40;
+  }
+  .source-table td {
+    padding: 10px 14px;
+    border: 1px solid #1a2a40;
+    color: #c0d0e0;
+    vertical-align: top;
+  }
+  .source-table tr:nth-child(even) td { background: rgba(15, 25, 40, 0.3); }
+  .source-table tr:nth-child(odd) td { background: rgba(10, 18, 30, 0.5); }
+  .source-table .provider { color: #5a9fd4; font-weight: 500; }
+  .source-table .api-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+  .api-free { background: rgba(64, 160, 112, 0.15); color: #40a070; border: 1px solid rgba(64, 160, 112, 0.3); }
+  .api-paid { background: rgba(90, 159, 212, 0.15); color: #5a9fd4; border: 1px solid rgba(90, 159, 212, 0.3); }
+  .api-public { background: rgba(122, 139, 168, 0.15); color: #7a8ba8; border: 1px solid rgba(122, 139, 168, 0.3); }
+
+  .flow-diagram {
+    padding: 28px 30px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%);
+    border: 1px solid #1e3a5f;
+    margin-top: 24px;
+    font-family: 'Cascadia Code', 'Fira Code', 'SF Mono', monospace;
+    font-size: 0.82rem;
+    color: #7a8ba8;
+    line-height: 1.8;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .flow-diagram .flow-highlight { color: #5a9fd4; font-weight: 500; }
+  .flow-diagram .flow-arrow { color: #40a070; }
+  .flow-diagram .flow-dim { color: #3a4a5a; }
+
+  .source-note {
+    font-size: 0.8rem;
+    color: #5a6a80;
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-left: 3px solid #1e3a5f;
+    background: rgba(15, 25, 40, 0.3);
+    border-radius: 0 8px 8px 0;
+    line-height: 1.6;
+  }
+  .source-note strong { color: #7a8ba8; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Industry Knowledge Vault</h1>
+<p class="subtitle">
+  Each vault is a structured knowledge base that teaches the AI pipeline <strong style="color:#c0d0e0;">how to think</strong> about an industry — the analytical frameworks, competitive dynamics, and leading indicators that a sector specialist carries in their head. A living layer keeps the vault current with earnings intelligence, material events, and weekly industry briefs. Structural knowledge feeds the AI; current-state intelligence serves the PM. Both update automatically with date-range scoping.
+</p>
+
+<!-- ============================================================ -->
+<!-- SECTION: Core Concept -->
+<!-- ============================================================ -->
+
+<div class="concept-banner">
+  <div class="concept-icon">&#x1f4da;</div>
+  <div class="concept-text">
+    <h3>Vault = How to Think &nbsp;|&nbsp; Pipeline = What Is Happening</h3>
+    <p>
+      A vault contains <strong>structural industry knowledge</strong> that changes slowly (quarterly at most): value chain layers, profit pool maps, demand segmentation frameworks, competitive relationships, leading indicators.
+      <br><br>
+      The live pipeline provides <strong>current-state data</strong>: latest quarter financials, stock prices, consensus estimates, recent news. At analysis time, the pipeline combines the vault's framework with fresh data — so the AI knows both how to decompose an industry AND what the current numbers are.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION: Directory Structure -->
+<!-- ============================================================ -->
+
+<div class="section-header">1 &nbsp;/&nbsp; Vault Directory Structure</div>
+<p class="section-sub">Every vault follows the same 7-file structural template plus a living layer for current-state intelligence. Example shown: Data Center vault.</p>
+
+<div class="tree-box">
+  <span class="dir">data_centers/</span><br>
+  &nbsp;&nbsp;<span class="structural">_overview.md</span> <span class="tree-comment">&mdash; What is this industry? Thesis, sub-segments, TAM</span><br>
+  &nbsp;&nbsp;<span class="structural">_value_chain.md</span> <span class="tree-comment">&mdash; Where does money flow? Layers, margins, dynamics</span><br>
+  &nbsp;&nbsp;<span class="analytical">_demand_composition.md</span> <span class="tree-comment">&mdash; What drives demand? Segmentation + decomposition guide</span><br>
+  &nbsp;&nbsp;<span class="analytical">_debates.md</span> <span class="tree-comment">&mdash; What do smart people disagree about?</span><br>
+  &nbsp;&nbsp;<span class="signal">_signals.md</span> <span class="tree-comment">&mdash; What leading indicators matter? Directions + interactions</span><br>
+  &nbsp;&nbsp;<span class="analytical">_kpis.md</span> <span class="tree-comment">&mdash; How to measure each sub-segment? Benchmarks</span><br>
+  &nbsp;&nbsp;<span class="meta">_changelog.md</span> <span class="tree-comment">&mdash; What changed since last run?</span><br>
+  &nbsp;&nbsp;<span class="meta">_brief.md</span> <span class="tree-comment">&mdash; Current-state industry snapshot (PM only, does NOT feed pipeline)</span><br>
+  &nbsp;&nbsp;<span class="dir">companies/</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="full-n">NBIS.md</span> <span class="tree-comment">&mdash; Full node (primary industry = data centers)</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="full-n">IREN.md</span> <span class="tree-comment">&mdash; Full node</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="full-n">CoreWeave.md</span> <span class="tree-comment">&mdash; Full node</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="full-n">EQIX.md</span> <span class="tree-comment">&mdash; Full node</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="light-n">ENPH.md</span> <span class="tree-comment">&mdash; Light node (home vault: residential_solar)</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="light-n">RIOT.md</span> <span class="tree-comment">&mdash; Light node (crypto miner pivoting to DC hosting)</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="light-n">LITE.md</span> <span class="tree-comment">&mdash; Light node (optical interconnects)</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="light-n">...</span>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION: The 7 Structural Files -->
+<!-- ============================================================ -->
+
+<div class="section-header">2 &nbsp;/&nbsp; The 7 Structural Files</div>
+<p class="section-sub">Each file answers one specific question an analyst would ask when learning a new sector. All examples from the Data Center vault.</p>
+
+<div class="file-grid">
+
+  <!-- Overview -->
+  <div class="file-card fc-structural">
+    <span class="file-tag tag-pipeline">Feeds Pipeline</span>
+    <div class="fname">_overview.md</div>
+    <div class="fq">"What is this industry and how is it structured?"</div>
+    <div class="fdesc">Industry thesis, sub-segment definitions, total addressable market, and binding constraints.</div>
+    <ul>
+      <li>Defines the sub-segments the pipeline uses to classify companies (GPU cloud, colocation, optical, chips, cooling)</li>
+      <li>States the industry's binding constraint — for DC: power availability, not demand</li>
+      <li>Sizes the market with sourced estimates (e.g., $350B DC TAM by 2028)</li>
+    </ul>
+    <div class="example-box">
+      <strong>DC vault example:</strong> "The primary constraint on data center expansion is power availability, not demand. Grid interconnection queues in key markets (PJM, ERCOT) run 4-7 years, creating a structural bottleneck that favors operators with secured power capacity."
+    </div>
+  </div>
+
+  <!-- Value Chain -->
+  <div class="file-card fc-structural">
+    <span class="file-tag tag-pipeline">Feeds Pipeline</span>
+    <div class="fname">_value_chain.md</div>
+    <div class="fq">"Where does the money flow and who captures value?"</div>
+    <div class="fdesc">Layer-by-layer profit pool map with margin ranges, competitive dynamics, and cross-layer dependencies.</div>
+    <ul>
+      <li>Maps every layer from silicon to hyperscale with operating margin ranges</li>
+      <li>Identifies which layers have pricing power vs commodity dynamics</li>
+      <li>Shows cross-layer dependencies (e.g., "neocloud margins compress when GPU supply normalizes")</li>
+    </ul>
+    <div class="example-box">
+      <strong>DC vault layers:</strong> L1 Compute Silicon (20-30% margins) → L2 Networking &amp; Interconnect (5-25%) → L3 Colocation (10-20%) → L4 Neoclouds (5-20%) → L5 Hyperscale Platforms (25-35%). The margin range itself is analytical signal — 5-25% at L2 means profitability depends entirely on where in the value chain the company sits.
+    </div>
+  </div>
+
+  <!-- Demand Composition -->
+  <div class="file-card fc-analytical">
+    <span class="file-tag tag-pipeline">Feeds Pipeline</span>
+    <div class="fname">_demand_composition.md</div>
+    <div class="fq">"What drives demand and how should the AI decompose revenue?"</div>
+    <div class="fdesc">Structural demand segmentation with shift mechanisms and a revenue bridge decomposition guide that the AI uses when building company-specific models.</div>
+    <ul>
+      <li>Lists segmentation axes (e.g., by customer type: hyperscale, enterprise, sovereign)</li>
+      <li>Explains composition shift mechanisms — HOW demand mix changes affect specific companies</li>
+      <li>Provides a revenue bridge guide — tells the AI what sub-segments to break revenue into</li>
+      <li>Contains NO current percentages or growth rates (those come from live pipeline data)</li>
+    </ul>
+    <div class="example-box">
+      <strong>DC vault example:</strong> "AI training demand is concentrated in GPU-dense compute (L4), while AI inference demand is distributed across colocation (L3) and edge. A shift from training-heavy to inference-heavy workloads compresses neocloud utilization but expands colocation opportunity." The AI uses this to decompose NBIS revenue by workload type rather than just reporting a single growth number.
+    </div>
+  </div>
+
+  <!-- Debates -->
+  <div class="file-card fc-analytical">
+    <span class="file-tag tag-pipeline">Feeds Pipeline</span>
+    <div class="fname">_debates.md</div>
+    <div class="fq">"What do smart people disagree about in this industry?"</div>
+    <div class="fdesc">2-3 key industry debates with both sides presented at equal evidence quality, market lean, resolution timeline, and affected companies.</div>
+    <ul>
+      <li>Both sides MUST have comparable evidence quality — one side with data + other side hand-waving = biased vault</li>
+      <li>States where consensus sits ("market lean") so the AI knows what's priced in</li>
+      <li>Identifies which companies benefit or suffer under each outcome</li>
+    </ul>
+    <div class="example-box">
+      <strong>DC vault debate — "Hyperscaler CapEx Sustainability":</strong><br>
+      <strong>Bull:</strong> Enterprise AI adoption is <2% penetrated; $200B+ annual hyperscaler CapEx is early-innings investment, not a bubble<br>
+      <strong>Bear:</strong> ROI scrutiny will slow spending; hyperscalers have historically cut CapEx 20-40% within 12 months when returns disappoint<br>
+      <strong>Market lean:</strong> Bull (CapEx guidance still accelerating in Q4 2025 earnings)<br>
+      <strong>Resolution:</strong> Next 2-3 earnings cycles will show ROI metrics<br>
+      <strong>Affected:</strong> NBIS, CRWV, IREN (all negatively exposed to CapEx slowdown)
+    </div>
+  </div>
+
+  <!-- Signals -->
+  <div class="file-card fc-signal">
+    <span class="file-tag tag-synthesis">Partial — Synthesis Only</span>
+    <div class="fname">_signals.md</div>
+    <div class="fq">"What leading indicators should we watch, and what do combinations mean?"</div>
+    <div class="fdesc">5 leading indicators per vault with current direction (ACCELERATING / DECELERATING / STABLE), evidence, and a signal interaction map showing what combinations indicate.</div>
+    <ul>
+      <li>Directions are hidden from perspective agents (prevents anchoring on vault's assessment)</li>
+      <li>Directions shown to synthesis agent only (informs final recommendation weighting)</li>
+      <li>Interaction map shows what signal combinations mean — more valuable than any single signal</li>
+    </ul>
+    <div class="example-box">
+      <strong>DC vault signals:</strong> Hyperscaler CapEx Trajectory (ACCELERATING), GPU Supply-Demand Balance (DECELERATING toward equilibrium), Power Availability (DECELERATING — scarcity worsening), Enterprise AI Adoption (ACCELERATING), Interconnect Bandwidth Demand (ACCELERATING)<br><br>
+      <strong>Interaction example:</strong> "CapEx ACCELERATING + Power DECELERATING = site scarcity premium rises, favoring operators with secured power (IREN, EQIX) over those still in buildout (NBIS expansion sites)."
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="file-card fc-kpi">
+    <span class="file-tag tag-pipeline">Feeds Pipeline</span>
+    <div class="fname">_kpis.md</div>
+    <div class="fq">"How do you measure companies in each sub-segment?"</div>
+    <div class="fdesc">Sub-segment-specific metrics with benchmark ranges. Different business models need different KPIs — a one-size-fits-all metric set would miss what matters.</div>
+    <ul>
+      <li>GPU Cloud (NBIS, IREN): contracted capacity (MW), utilization rate, $/GPU-hr, net revenue retention</li>
+      <li>Colocation (EQIX): power density (kW/rack), interconnection revenue %, lease duration, churn</li>
+      <li>Optical (LITE, COHR): design wins, wavelength count, port speed migration cycle</li>
+      <li>Includes benchmark ranges so the AI can assess whether a company's metrics are strong or weak</li>
+    </ul>
+    <div class="example-box">
+      <strong>GPU Cloud KPI example:</strong> "Contracted capacity utilization >85% = healthy demand. Below 70% = potential over-build risk. Net revenue retention >120% = upsell dynamics working (customers buying more compute over time)."
+    </div>
+  </div>
+
+  <!-- Changelog -->
+  <div class="file-card fc-meta">
+    <span class="file-tag tag-reference">Reference</span>
+    <div class="fname">_changelog.md</div>
+    <div class="fq">"What changed since the last pipeline run?"</div>
+    <div class="fdesc">Timestamped log of material updates. Enables the pipeline to detect what's new and focus the AI's attention on changed information rather than re-analyzing everything.</div>
+    <ul>
+      <li>Entries include date, what changed, and why it matters</li>
+      <li>Supports four update modes: structural refresh, current-state brief, earnings intelligence, material events</li>
+    </ul>
+    <div class="example-box">
+      <strong>Example entry:</strong> "2026-02-25: Added NBIS as full node (Layer 4, neocloud). $22-26B contracted backlog, Microsoft/Meta anchor contracts. Reason: pure-play GPU cloud, archetypal DC vault company."
+    </div>
+  </div>
+
+  <!-- Brief -->
+  <div class="file-card fc-meta">
+    <span class="file-tag tag-reference">PM Only &mdash; Does Not Feed Pipeline</span>
+    <div class="fname">_brief.md</div>
+    <div class="fq">"What's happening in this industry right now?"</div>
+    <div class="fdesc">Weekly current-state snapshot for the PM's sector allocation decisions. Material developments, ticker triggers, and company event flags. Deliberately excluded from the pipeline to prevent current-state anchoring.</div>
+    <ul>
+      <li>Refreshed weekly via <code style="color:#7a8ba8;">--brief-only</code> with date-range scoping (only queries developments since last update)</li>
+      <li>Includes "Company Event Flags" &mdash; one-line summary of which nodes have recent developments since last brief</li>
+      <li>Identifies "Migration Candidates" &mdash; brief findings that should promote to structural files</li>
+      <li>Point-in-time snapshot, replaced each refresh &mdash; not cumulative</li>
+    </ul>
+    <div class="example-box">
+      <strong>DC vault example:</strong> "Material Development #1: NVIDIA announces $2B strategic investments in Nebius and CoreWeave, signaling preferred neocloud ecosystem partners... Company Event Flags: NBIS (NVIDIA $2B investment, Mar 12), RIOT (AMD 75MW option exercise, Mar 12)."
+    </div>
+  </div>
+
+</div>
+
+<div class="sep"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION: Full Node vs Light Node -->
+<!-- ============================================================ -->
+
+<div class="section-header">3 &nbsp;/&nbsp; Company Nodes — Full vs Light</div>
+<p class="section-sub">Every company in the vault gets a node. The depth depends on whether this industry is the company's primary home.</p>
+
+<div class="anatomy-grid">
+  <div class="anatomy-col anatomy-full">
+    <h4>Full Node — "This IS their industry"</h4>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Value chain position <span class="dim">(layer, sub-segment)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Revenue model <span class="dim">(how they make money)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Relationship map <span class="dim">(suppliers, customers, competitors)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Competitive advantages <span class="dim">(with verification tags)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Competitive risks <span class="dim">(with verification tags)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Valuation methodology <span class="dim">(which metrics apply)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Key KPIs <span class="dim">(company-specific watchlist)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Business model narrative <span class="dim">(full analytical write-up)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Competitive position narrative <span class="dim">(vs peers, moats, vulnerabilities)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Key relationships <span class="dim">(each with why it matters to thesis)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-yes">&#10003;</span> <span class="anatomy-label">Industry-specific notes <span class="dim">(nuances unique to this company)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-special">&#9733;</span> <span class="anatomy-label">Recent developments <span class="dim">(optional &mdash; material events between earnings, timestamped)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-special">&#9733;</span> <span class="anatomy-label">Earnings intelligence <span class="dim">(optional &mdash; management guidance, Q&amp;A with [DEFLECTION] flags, sequential changes)</span></span></div>
+  </div>
+  <div class="anatomy-col anatomy-light">
+    <h4>Light Node — "They're visiting this industry"</h4>
+    <div class="anatomy-row"><span class="anatomy-check check-special">~</span> <span class="anatomy-label">Value chain position <span class="dim">(if mappable to a layer)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-no">&times;</span> <span class="anatomy-label">Revenue model</span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-no">&times;</span> <span class="anatomy-label">Relationship map</span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-no">&times;</span> <span class="anatomy-label">Competitive advantages / risks</span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-no">&times;</span> <span class="anatomy-label">Valuation methodology</span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-no">&times;</span> <span class="anatomy-label">Key KPIs</span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-no">&times;</span> <span class="anatomy-label">Full analytical write-ups</span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-no">&times;</span> <span class="anatomy-label">Financial metrics <span class="dim">(computed from XBRL at runtime)</span></span></div>
+    <div style="height: 12px;"></div>
+    <div class="anatomy-row"><span class="anatomy-check check-special">&#9733;</span> <span class="anatomy-label">Role in industry <span class="dim">(why they appear in this vault)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-special">&#9733;</span> <span class="anatomy-label">Key signal <span class="dim">(what to monitor from this company)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-special">&#9733;</span> <span class="anatomy-label">Relevance mechanism <span class="dim">(causal chain connecting to this industry)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-special">&#9733;</span> <span class="anatomy-label">Primary industry pointer <span class="dim">(where full node lives)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-special">&#9733;</span> <span class="anatomy-label">Recent developments <span class="dim">(optional &mdash; filtered to host vault relevance only)</span></span></div>
+    <div class="anatomy-row"><span class="anatomy-check check-special">&#9733;</span> <span class="anatomy-label">Earnings intelligence <span class="dim">(optional &mdash; filtered subset relevant to host industry)</span></span></div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION: NBIS Full Node Example -->
+<!-- ============================================================ -->
+
+<div class="section-header">4 &nbsp;/&nbsp; Full Node Example — NBIS (Nebius Group)</div>
+<p class="section-sub">A pure-play AI cloud infrastructure company (Layer 4 neocloud). The full node covers everything the pipeline needs to analyze it.</p>
+
+<div class="node-compare">
+  <div class="node-panel node-full">
+    <div class="node-type-label">Full Node</div>
+    <div class="node-ticker">NBIS</div>
+    <div class="node-name">Nebius Group N.V. &mdash; Layer 4, Neocloud</div>
+
+    <div class="node-section">
+      <div class="node-section-title">Structured Metadata (Machine-Readable)</div>
+      <div class="field-row"><span class="field-label">layer:</span> <span class="field-value highlight">4 (Compute Platforms)</span></div>
+      <div class="field-row"><span class="field-label">sub_segment:</span> <span class="field-value highlight">neocloud</span></div>
+      <div class="field-row"><span class="field-label">revenue_model:</span> <span class="field-value">capacity_leasing</span></div>
+      <div class="field-row"><span class="field-label">suppliers:</span> <span class="field-value">NVDA</span></div>
+      <div class="field-row"><span class="field-label">customers:</span> <span class="field-value">MSFT, META, OPENAI</span></div>
+      <div class="field-row"><span class="field-label">competitors:</span> <span class="field-value">CRWV, IREN, AMZN, GOOGL</span></div>
+      <div class="field-row"><span class="field-label">valuation:</span> <span class="field-value">EV/Revenue, EV/MW</span></div>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title">Competitive Advantages</div>
+      <ul>
+        <li>In-house server/rack/facility design — higher efficiency, faster deployment <span class="tag-unverified">UNVERIFIED</span></li>
+        <li>Full-stack software platform with shared compute buffers, per-kW observability <span class="tag-unverified">UNVERIFIED</span></li>
+        <li>$22-26B contracted backlog — multi-year revenue visibility <span class="tag-unverified">UNVERIFIED</span></li>
+        <li>Anchor partnerships: Microsoft, Meta, OpenAI <span class="tag-unverified">UNVERIFIED</span></li>
+        <li>Secured power: 2+ GW contracted, targeting 800 MW-1 GW compute by end-2026 <span class="tag-unverified">UNVERIFIED</span></li>
+      </ul>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title">Competitive Risks</div>
+      <ul>
+        <li>$16-20B 2026 CapEx across 9 new sites = execution risk <span class="tag-unverified">UNVERIFIED</span></li>
+        <li>Negative FCF through 2026, $1.2B debt = financing dependency <span class="tag-unverified">UNVERIFIED</span></li>
+        <li>Single-supplier GPU dependency (NVIDIA) <span class="tag-unverified">UNVERIFIED</span></li>
+        <li>60x P/S vs Nasdaq 5.5x — no margin for error <span class="tag-unverified">UNVERIFIED</span></li>
+        <li>Microsoft + Meta concentration — vulnerable to contract renegotiation <span class="tag-unverified">UNVERIFIED</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="node-panel node-full" style="border-color: #1a2a3a;">
+    <div class="node-section">
+      <div class="node-section-title">Business Model (Narrative)</div>
+      <ul>
+        <li>Sells reserved GPU compute blocks to hyperscalers and AI developers on multi-year contracts</li>
+        <li>Q4 2025: $228M revenue, +547% YoY. 2026 guidance: $3.0-3.4B</li>
+        <li>Key dependencies: power availability, GPU supply (NVIDIA exclusive), hyperscaler contract execution</li>
+        <li>Yandex spinoff — reconstituted as pure AI infrastructure after divesting Russian business</li>
+        <li>Hidden NAV optionality: ClickHouse (cloud database, valued at $15-25B) and Avride (autonomous vehicles)</li>
+      </ul>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title">Competitive Position (Narrative)</div>
+      <ul>
+        <li>Closest peer: CoreWeave (CRWV) — same customer base, same GPU allocation competition</li>
+        <li>Claimed differentiator: vertical integration (in-house design) vs CoreWeave's pass-through model</li>
+        <li>Targeting 800 MW-1 GW compute by end-2026, up from ~220 MW — 4x scale-up</li>
+        <li>Sovereign EU positioning (Finland buildout) for data residency compliance demand</li>
+      </ul>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title">Key Relationships (Each with "Why It Matters")</div>
+      <ul>
+        <li><strong style="color:#6ab4ff;">NVDA</strong> — Exclusive GPU supplier + $2B strategic investor. GPU allocation is the binding constraint on capacity buildout</li>
+        <li><strong style="color:#6ab4ff;">MSFT</strong> — Multi-tranche deployment (H2 2026 weighted). Linked to 15M Copilot seat infrastructure needs</li>
+        <li><strong style="color:#6ab4ff;">META</strong> — Multi-billion-dollar cloud deal. Supply chain alignment through shared NVIDIA dependency</li>
+        <li><strong style="color:#6ab4ff;">CRWV</strong> — Closest peer competitor. Further along in delivery timeline, competing for same GPU allocations</li>
+      </ul>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title">Industry-Specific Notes</div>
+      <ul>
+        <li>CapEx funding circularity: "60% from operations" — but operations require the CapEx to generate revenue first</li>
+        <li>Liquid cooling infrastructure for Blackwell-gen GPUs — in-house design claimed as deployment speed advantage</li>
+        <li>Token Factory / Aether platforms — proprietary orchestration, traction not yet quantified</li>
+      </ul>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title" style="border-bottom-color: #2a3a2a;">Recent Developments (Event-Driven)</div>
+      <ul>
+        <li><strong style="color:#50e0a0;">2026-03-12:</strong> NVIDIA announces $2B strategic investment in NBIS &mdash; priority access to Rubin GPUs, Vera CPUs, and BlueField storage. Validates Nebius as preferred NVIDIA-aligned neocloud. Mirrors parallel $2B NVIDIA deals with CoreWeave and Nscale.</li>
+      </ul>
+      <div class="node-quote">
+        Recent Developments capture material events BETWEEN earnings cycles. Timestamped, logged via <code style="color:#6a7a90;">--event NBIS "NVIDIA $2B strategic investment"</code>. When next earnings run, items covered by earnings intelligence are consolidated (removed). Items management didn't address persist.
+      </div>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title" style="border-bottom-color: #1e3a5f;">Latest Earnings Intelligence (Q4 2025)</div>
+      <ul>
+        <li><strong style="color:#6ab4ff;">Management Guidance:</strong> FY2026 revenue $3.0-3.4B, CapEx $16-20B, EBITDA margin ~40%, ARR target $7-9B by end-2026</li>
+        <li><strong style="color:#6ab4ff;">Key Q&amp;A (6 exchanges):</strong> 5 management deflections flagged &mdash; capex financing gap, revenue vs ARR reconciliation, buffer margins, Tavily acquisition price, M&amp;A budget <span class="tag-unverified">DEFLECTION</span></li>
+        <li><strong style="color:#6ab4ff;">Pricing Signal:</strong> ASP +50% Q4 QoQ, demand framing: "sold out in 2026" <span class="tag-unverified">UNVERIFIED</span></li>
+        <li><strong style="color:#6ab4ff;">Sequential Changes:</strong> STARTED emphasizing: EBITDA margin trajectory, depreciation policy change, ClickHouse monetization timeline. STOPPED emphasizing: prior Yandex restructuring narrative.</li>
+      </ul>
+      <div class="node-quote">
+        Earnings intelligence is extracted via <code style="color:#6a7a90;">--earnings NBIS</code> using Perplexity deep-research (2 queries for full nodes). [DEFLECTION] flags mark where management absorbed analyst questions with qualitative signals instead of data &mdash; a first-class analytical signal backed by Chicago Booth research.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION: ENPH Light Node Example -->
+<!-- ============================================================ -->
+
+<div class="section-header">5 &nbsp;/&nbsp; Light Node Example — ENPH (Enphase Energy)</div>
+<p class="section-sub">A residential solar company whose VPP platform creates a cross-industry connection to data center power constraints. The light node captures ONLY why ENPH matters to this vault — not its full business profile.</p>
+
+<div class="node-compare">
+  <div class="node-panel node-light">
+    <div class="node-type-label">Light Node</div>
+    <div class="node-ticker">ENPH</div>
+    <div class="node-name">Enphase Energy, Inc. &mdash; Distributed Energy Resources</div>
+
+    <div class="node-section">
+      <div class="node-section-title">Structured Metadata</div>
+      <div class="field-row"><span class="field-label">node_type:</span> <span class="field-value highlight">light</span></div>
+      <div class="field-row"><span class="field-label">primary_industry:</span> <span class="field-value highlight">residential_solar</span></div>
+      <div class="field-row"><span class="field-label">layer:</span> <span class="field-value">[] (no direct DC layer mapping)</span></div>
+      <div class="field-row"><span class="field-label">sub_segment:</span> <span class="field-value">distributed_energy_resources</span></div>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title">Role in Industry</div>
+      <div class="node-quote">
+        "ENPH is the leading US residential microinverter and battery storage manufacturer with a growing VPP (virtual power plant) platform. Not a data center company — it's a light node because its distributed energy fleet represents a potential grid capacity relief mechanism for power-constrained data center markets."
+      </div>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title">Key Signal (What to Monitor)</div>
+      <ul>
+        <li>VPP enrollment growth and grid services revenue — how fast can residential batteries be aggregated into firm, dispatchable capacity?</li>
+        <li>If VPP scales and utilities accept distributed batteries as reliable grid resources → alternative pathway to alleviating DC power constraints</li>
+        <li>Watch: VPP dispatch volumes, utility partnerships, hyperscaler-funded residential DER programs</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="node-panel node-light" style="border-color: #2a2a40;">
+    <div class="node-section">
+      <div class="node-section-title">Relevance Mechanism (The Cross-Industry Causal Chain)</div>
+      <ul>
+        <li><strong style="color:#9090d0;">The constraint:</strong> PJM grid interconnection queues run 4-7 years. PJM projected to add 31 GW of DC load vs only 28 GW new generation</li>
+        <li><strong style="color:#9090d0;">The alternative:</strong> Distributed DER aggregation via VPP provides faster grid capacity relief than new transmission (months vs years)</li>
+        <li><strong style="color:#9090d0;">The evidence:</strong> Sunrun's CalReady VPP already delivers 250 MW average (375 MW peak) from ~75,000 residential batteries in California</li>
+        <li><strong style="color:#9090d0;">The thesis:</strong> ENPH's "Jensen Cake" pitch at CES 2026 — hyperscalers could subsidize residential solar+battery to free grid capacity for DC. No hyperscaler has done this yet, but the math works: new DC power costs $50K+ per 5 kW vs ~$10K for a subsidized residential battery</li>
+        <li><strong style="color:#9090d0;">The scale:</strong> ~9 GWh US residential battery fleet today = ~3.3 GW dispatchable. Adding batteries to 2.5M existing PV-only homes could yield tens of GW</li>
+      </ul>
+    </div>
+
+    <div class="node-section">
+      <div class="node-section-title">What's NOT Here (By Design)</div>
+      <ul>
+        <li>No financial metrics — ENPH's revenue, margins, EPS are computed from XBRL data at pipeline runtime</li>
+        <li>No competitive analysis — that lives in ENPH's full node in the residential_solar vault</li>
+        <li>No supplier/customer/competitor maps — only the cross-industry relationship matters here</li>
+        <li>No stock recommendation — the vault provides analytical context, not conclusions</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION: How Vault Feeds Pipeline -->
+<!-- ============================================================ -->
+
+<div class="section-header">6 &nbsp;/&nbsp; How the Vault Feeds the Pipeline</div>
+<p class="section-sub">Different vault content is injected at different pipeline stages. Not everything goes everywhere — each stage gets only what it needs.</p>
+
+<div class="injection-flow">
+  <div class="injection-stage inj-vault">
+    <div class="inj-label">Vault Content</div>
+    <div class="inj-desc">7 structural files<br>+ company nodes</div>
+  </div>
+  <div class="inj-arrow">&#x279C;</div>
+  <div class="injection-stage inj-pipeline">
+    <div class="inj-label">Pre-Brief</div>
+    <div class="inj-desc">Overview, value chain,<br>debates, KPIs, node</div>
+  </div>
+  <div class="inj-arrow">&#x279C;</div>
+  <div class="injection-stage inj-pipeline">
+    <div class="inj-label">Perspectives</div>
+    <div class="inj-desc">Demand composition,<br>debates, KPIs, node<br><em style="color:#c09030;">Signal directions hidden</em></div>
+  </div>
+  <div class="inj-arrow">&#x279C;</div>
+  <div class="injection-stage inj-pipeline">
+    <div class="inj-label">Synthesis</div>
+    <div class="inj-desc">Signals with directions,<br>debates, node context</div>
+  </div>
+  <div class="inj-arrow">&#x279C;</div>
+  <div class="injection-stage inj-output">
+    <div class="inj-label">Final Memo</div>
+    <div class="inj-desc">Vault-informed<br>recommendation</div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION: Update Modes & Living Layer -->
+<!-- ============================================================ -->
+
+<div class="section-header">7 &nbsp;/&nbsp; Update Modes &mdash; How the Vault Stays Current</div>
+<p class="section-sub">Four CLI modes keep the vault current at different cadences. Each mode writes to different files, feeds different consumers, and auto-commits (or doesn't) based on review requirements. All modes use date-range scoping &mdash; queries only fetch information since the last update, reducing cost and avoiding re-discovery.</p>
+
+<div class="mode-grid">
+
+  <div class="mode-card mode-structural">
+    <div class="mode-title">Structural Refresh</div>
+    <div class="mode-cmd">--update</div>
+    <div class="mode-desc">
+      Quarterly. Reads all 7 structural files, diffs against current Perplexity research. Writes ONLY material changes &mdash; "factually wrong or structurally incomplete." A mature vault should return mostly no-changes. <strong>Stages changes but does NOT auto-commit</strong> &mdash; structural changes need human review before commit.
+    </div>
+    <div class="mode-tags">
+      <span class="mode-tag mt-pipeline">Feeds Pipeline</span>
+      <span class="mode-tag mt-manual">Manual Commit</span>
+    </div>
+  </div>
+
+  <div class="mode-card mode-brief">
+    <div class="mode-title">Industry Brief</div>
+    <div class="mode-cmd">--brief-only</div>
+    <div class="mode-desc">
+      Weekly. Writes current-state snapshot to <code style="color:#c09030;">_brief.md</code> for PM sector allocation decisions. Includes material developments, ticker triggers, Company Event Flags (which nodes have recent events), and migration candidates for manual promotion to structural files. <strong>Does NOT feed the pipeline</strong> &mdash; prevents current-state anchoring.
+    </div>
+    <div class="mode-tags">
+      <span class="mode-tag mt-pm">PM Only</span>
+      <span class="mode-tag mt-autocommit">Auto-Commit</span>
+    </div>
+  </div>
+
+  <div class="mode-card mode-earnings">
+    <div class="mode-title">Earnings Intelligence</div>
+    <div class="mode-cmd">--earnings NBIS</div>
+    <div class="mode-desc">
+      After each earnings report. Extracts call substance into the company node: management guidance, key Q&amp;A exchanges with <strong>[DEFLECTION]</strong> flagging, competitive commentary, and sequential changes from prior quarter (STARTED/STOPPED/SHIFTED emphasis patterns). Two deep-research queries for full nodes, one for light nodes. Consolidates Recent Developments that earnings now supersede.
+    </div>
+    <div class="mode-tags">
+      <span class="mode-tag mt-pipeline">Feeds Pipeline</span>
+      <span class="mode-tag mt-autocommit">Auto-Commit</span>
+    </div>
+  </div>
+
+  <div class="mode-card mode-event">
+    <div class="mode-title">Material Event</div>
+    <div class="mode-cmd">--event NBIS "NVIDIA $2B investment"</div>
+    <div class="mode-desc">
+      Ad-hoc, when material events occur between earnings. Appends a timestamped entry to the node's "Recent Developments" section. One targeted sonar-pro query (fast, cheap). Propagates filtered entries to light nodes in other vaults if relevant. <strong>Decision filter:</strong> run for events that change relationships, competitive position, or business model &mdash; NOT for price moves, analyst calls, or quarterly results.
+    </div>
+    <div class="mode-tags">
+      <span class="mode-tag mt-pipeline">Feeds Pipeline</span>
+      <span class="mode-tag mt-autocommit">Auto-Commit</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="sep"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION: Design Decisions -->
+<!-- ============================================================ -->
+
+<div class="section-header">8 &nbsp;/&nbsp; Key Design Decisions</div>
+<p class="section-sub">Each decision addresses a specific failure mode we observed in practice.</p>
+
+<div class="decisions-grid">
+
+  <div class="decision-card">
+    <h4>No Current-State Data in Vault</h4>
+    <div class="decision-why">Problem: Vault snapshots of prices, growth rates, or quarterly numbers go stale within weeks — and stale data silently biases analysis.</div>
+    <ul>
+      <li>Vault contains only structural knowledge (changes quarterly at most)</li>
+      <li>Current data (prices, estimates, news) flows through the live pipeline at runtime</li>
+      <li>AI combines vault framework + fresh data at analysis time — never working from stale snapshots</li>
+      <li>Financial metrics for light nodes are computed from XBRL at runtime, not stored in vault</li>
+    </ul>
+  </div>
+
+  <div class="decision-card">
+    <h4>Signal Directions Hidden from Perspectives</h4>
+    <div class="decision-why">Problem: If the bull analyst sees "CapEx = ACCELERATING," it anchors on the vault's judgment instead of forming its own from the evidence.</div>
+    <ul>
+      <li>Perspective agents see the signal definitions (what to look for) but NOT the current direction</li>
+      <li>Forces perspectives to independently assess signal status from the live data in their fact set</li>
+      <li>Synthesis agent sees directions — uses them to weigh perspective conclusions, not to form the thesis</li>
+      <li>Prevents the vault from pre-determining the recommendation through upstream anchoring</li>
+    </ul>
+  </div>
+
+  <div class="decision-card">
+    <h4>[UNVERIFIED] Tags on Claims</h4>
+    <div class="decision-why">Problem: AI-sourced industry data (via Perplexity) may contain errors that look authoritative. We need to distinguish verified from unverified.</div>
+    <ul>
+      <li>Quantitative claims (capacity figures, revenue) stay [UNVERIFIED] — pipeline computes actuals from XBRL/API data at runtime</li>
+      <li>Structural claims (tier assignments, competitive relationships) need human review — these can't be self-corrected by the pipeline</li>
+      <li>Human review is ~30 min per vault, focused on structural accuracy, not forensic number-checking</li>
+    </ul>
+  </div>
+
+  <div class="decision-card">
+    <h4>Full Node vs Light Node Separation</h4>
+    <div class="decision-why">Problem: A company like RIOT appears in both crypto and data center analysis. Duplicating its full profile in both vaults creates staleness and inconsistency.</div>
+    <ul>
+      <li>Full node = company's primary industry. Complete analytical profile lives in ONE place</li>
+      <li>Light node = cross-industry relevance only. Captures the causal chain connecting it to the host vault</li>
+      <li>No financial data in light nodes — computed fresh from XBRL at runtime to avoid stale duplication</li>
+      <li>Light nodes update on the host vault's refresh cycle, not independently</li>
+    </ul>
+  </div>
+
+  <div class="decision-card">
+    <h4>Both Sides of Debates Must Have Equal Evidence</h4>
+    <div class="decision-why">Problem: It's easy to build a vault that looks balanced but actually has a strong bull case with data and a weak bear case with hand-waving. The AI will detect the asymmetry and lean accordingly.</div>
+    <ul>
+      <li>Both bull and bear sides must cite specific, sourced evidence at comparable depth</li>
+      <li>If one side's evidence is weaker, that's a research gap to fill — not a signal to lean the other way</li>
+      <li>Market lean is stated explicitly so the AI knows what's consensus and what's contrarian</li>
+    </ul>
+  </div>
+
+  <div class="decision-card">
+    <h4>Sub-Segment-Specific KPIs</h4>
+    <div class="decision-why">Problem: Measuring a neocloud (NBIS) by colocation KPIs (interconnection revenue %) is meaningless. One-size-fits-all metrics miss what actually differentiates performance.</div>
+    <ul>
+      <li>Each sub-segment gets its own KPI framework with relevant benchmarks</li>
+      <li>AI matches the company's sub-segment to the right KPI set automatically</li>
+      <li>Benchmark ranges included so AI can assess "good vs bad" — not just report the number</li>
+      <li>Prevents the AI from applying generic financial ratios when sector-specific metrics exist</li>
+    </ul>
+  </div>
+
+  <div class="decision-card">
+    <h4>[DEFLECTION] Flagging in Earnings Intelligence</h4>
+    <div class="decision-why">Problem: Management spin on earnings calls is treated as informational content. Hedging and evasion are filtered out instead of treated as analytical signals.</div>
+    <ul>
+      <li>Chicago Booth research: euphemisms and Q&amp;A deflection predict negative outcomes even after controlling for reported financials</li>
+      <li>When management absorbs a question with qualitative signals instead of data, it's flagged [DEFLECTION]</li>
+      <li>Creates a trackable pattern quarter to quarter &mdash; new deflections on previously direct topics are a red flag</li>
+      <li>NBIS Q4 2025 example: 5 deflections on capex financing gap, revenue/ARR reconciliation, buffer margins, acquisition price, M&amp;A budget</li>
+    </ul>
+  </div>
+
+  <div class="decision-card">
+    <h4>Two Consumers, One Vault</h4>
+    <div class="decision-why">Problem: The PM needs current-state industry intelligence for sector allocation, but injecting current-state data into the pipeline biases the AI's independent analysis.</div>
+    <ul>
+      <li>Structural layer (7 files + company nodes) feeds the pipeline &mdash; HOW to think about an industry</li>
+      <li>Living layer (<code style="color:#8a9ab5;">_brief.md</code> + Recent Developments) serves the PM &mdash; WHAT is happening now</li>
+      <li>The brief is explicitly excluded from pipeline injection to prevent anchoring on current trends</li>
+      <li>Recent Developments in nodes DO feed the pipeline &mdash; they change the analytical framework for that company</li>
+      <li>Different cadences: structural = quarterly, brief = weekly, events = ad-hoc, earnings = after each report</li>
+    </ul>
+  </div>
+
+  <div class="decision-card">
+    <h4>Date-Range Scoping on All Queries</h4>
+    <div class="decision-why">Problem: Re-running vault updates re-discovers information the vault already has, wasting tokens, money, and time.</div>
+    <ul>
+      <li>Every node and file carries a <code style="color:#8a9ab5;">last_updated</code> date in YAML frontmatter</li>
+      <li>All Perplexity queries scope to "since {last_updated}" &mdash; only fetching new information</li>
+      <li>Earnings queries include prior-quarter context for sequential diff ("focus on NEW or CHANGED")</li>
+      <li>Reduces per-query cost by 30-50% and eliminates redundant re-confirmation of known facts</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION: Data Sources -->
+<!-- ============================================================ -->
+
+<div class="section-header">9 &mdash; Pipeline Data Sources</div>
+<div class="section-sub">Every data point in the system traces to one of these sources. No Bloomberg, Refinitiv, or FactSet &mdash; the entire stack runs on low-cost or free APIs.</div>
+
+<table class="source-table">
+  <caption>Financial Data &mdash; FMP (Financial Modeling Prep)</caption>
+  <tr><th>Endpoint</th><th>Data</th><th>Consumer</th></tr>
+  <tr>
+    <td><span class="provider">Fundamentals</span></td>
+    <td>Price, income/balance/cash flow statements, key ratios, profitability metrics</td>
+    <td>Underwriter, Historian, Long-Only</td>
+  </tr>
+  <tr>
+    <td><span class="provider">Analyst Estimates</span></td>
+    <td>Consensus EPS &amp; revenue (annual + quarterly), high/low/average, analyst count</td>
+    <td>Underwriter (consensus infrastructure, Framework Memo)</td>
+  </tr>
+  <tr>
+    <td><span class="provider">Estimate Revisions</span></td>
+    <td>EPS/revenue estimate changes over 7/30/90-day windows, revision direction, analyst count delta</td>
+    <td>Underwriter (Wave 1 data)</td>
+  </tr>
+  <tr>
+    <td><span class="provider">Price Targets</span></td>
+    <td>Sell-side target spread (high/low/consensus), target spread ratio for framework classification</td>
+    <td>Underwriter (v7.0 Framework Memo &mdash; ratio &gt;2.0x signals analysts disagree on what the company <em>is</em>)</td>
+  </tr>
+</table>
+
+<table class="source-table">
+  <caption>Regulatory Data &mdash; SEC EDGAR</caption>
+  <tr><th>Source</th><th>Data</th><th>Consumer</th></tr>
+  <tr>
+    <td><span class="provider">XBRL Structured Tags</span> <span class="api-tag api-public">PUBLIC</span></td>
+    <td>Revenue, margins, SBC, D&amp;A, segment data, peer-specific metrics (e.g., EV/EH/s for miners)</td>
+    <td>Underwriter, Historian</td>
+  </tr>
+  <tr>
+    <td><span class="provider">Full-Text Filings</span> <span class="api-tag api-public">PUBLIC</span></td>
+    <td>10-K / 10-Q prose &mdash; MD&amp;A, risk factors, business description (narrative archaeology)</td>
+    <td>Underwriter</td>
+  </tr>
+</table>
+
+<table class="source-table">
+  <caption>Research Intelligence &mdash; Perplexity API</caption>
+  <tr><th>Model Tier</th><th>Data</th><th>Consumer</th></tr>
+  <tr>
+    <td><span class="provider">sonar-pro</span> <span class="api-tag api-paid">SEARCH</span></td>
+    <td>Real-time web search: recent news, analyst commentary, industry trends, competitive dynamics. 12+ targeted queries per ticker + 1 broad news sweep (Query #0)</td>
+    <td>Underwriter (per-run data gathering)</td>
+  </tr>
+  <tr>
+    <td><span class="provider">deep-research</span> <span class="api-tag api-paid">DEEP</span></td>
+    <td>Multi-step research: vault node population, earnings transcript extraction, event analysis, completeness audits. Date-range scoped via frontmatter</td>
+    <td>Industry Expert (all 4 CLI modes: <code style="color:#8a9ab5;">--update</code>, <code style="color:#8a9ab5;">--brief-only</code>, <code style="color:#8a9ab5;">--event</code>, <code style="color:#8a9ab5;">--earnings</code>)</td>
+  </tr>
+</table>
+
+<table class="source-table">
+  <caption>Industry Knowledge &mdash; Vault System</caption>
+  <tr><th>Source</th><th>Data</th><th>Consumer</th></tr>
+  <tr>
+    <td><span class="provider">Vault Nodes</span> (Obsidian MD)</td>
+    <td>Industry structure, peer lists, valuation frameworks, competitive dynamics, earnings intelligence, recent developments. Human-reviewed, AI-populated, git-versioned</td>
+    <td>Underwriter (auto-matched via deterministic node scan), Long-Only</td>
+  </tr>
+  <tr>
+    <td><span class="provider">Vault Brief</span> (<code style="color:#8a9ab5;">_brief.md</code>)</td>
+    <td>Current-state industry summary, triggers, coverage gaps. <strong>Excluded from pipeline</strong> &mdash; PM reference only</td>
+    <td>PM (not injected into pipeline)</td>
+  </tr>
+</table>
+
+<div class="flow-diagram"><span class="flow-highlight">FMP</span> + <span class="flow-highlight">SEC XBRL</span> + <span class="flow-highlight">SEC Filings</span> + <span class="flow-highlight">Perplexity sonar-pro</span>
+       <span class="flow-arrow">↓</span>
+  Data Gathering Layer
+       <span class="flow-arrow">↓</span>
+  Fact Filtering + Extraction <span class="flow-dim">(Sonnet 4.6)</span>
+       <span class="flow-arrow">↓</span>
+  <span class="flow-highlight">IE Vault Nodes</span> <span class="flow-dim">(auto-matched)</span>  <span class="flow-arrow">←</span>  <span class="flow-highlight">Perplexity deep-research</span>
+       <span class="flow-arrow">↓</span>
+  Framework Memo <span class="flow-arrow">→</span> Perspectives <span class="flow-arrow">→</span> Synthesis <span class="flow-arrow">→</span> Investment Memo</div>
+
+<div class="source-note">
+  <strong>Cost profile:</strong> FMP (single API key, low-cost tier) + Perplexity (per-query pricing, ~$0.50-2.00 per deep-research call) + SEC EDGAR (free, public). No enterprise terminal subscriptions required. The vault system amortizes research cost &mdash; Perplexity queries run once per update cycle, not once per stock run.
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION: Summary -->
+<!-- ============================================================ -->
+
+<div class="summary-banner">
+  <h3>Key Takeaways</h3>
+  <ul>
+    <li><strong>7 structural files + living layer + company nodes</strong> — each file answers one question a sector specialist would ask. The living layer (<code style="color:#8a9ab5;">_brief.md</code>) serves the PM without contaminating the pipeline.</li>
+    <li><strong>Full nodes</strong> provide complete coverage for companies whose primary industry matches the vault, including earnings intelligence and material event tracking. <strong>Light nodes</strong> capture only the cross-industry thesis for companies visiting from another sector.</li>
+    <li><strong>Four update modes</strong> keep the vault current: structural refresh (quarterly), industry brief (weekly), earnings intelligence (per-report), and material events (ad-hoc). All use date-range scoping to minimize cost.</li>
+    <li><strong>[DEFLECTION] flagging</strong> turns management hedging into a trackable analytical signal. Sequential change tracking (STARTED/STOPPED/SHIFTED) reveals narrative shifts quarter to quarter.</li>
+    <li><strong>Every design decision addresses a real failure.</strong> Signal direction hiding prevents anchoring. [UNVERIFIED] tags prevent false authority. Sub-segment KPIs prevent apples-to-oranges measurement. Equal-evidence debates prevent embedded bias. Pipeline exclusion of the brief prevents current-state contamination.</li>
+    <li><strong>No enterprise terminals required.</strong> The entire data stack runs on FMP (financials), SEC EDGAR (regulatory filings), and Perplexity API (real-time research). Vault updates amortize research cost across runs.</li>
+    <li><strong>The vault is extensible.</strong> New industries get the same template. New companies get a full or light node. New debates, signals, or KPIs get added to existing files. Nothing needs to be redesigned.</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

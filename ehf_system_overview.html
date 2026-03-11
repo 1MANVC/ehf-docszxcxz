@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHF System Overview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0a0e17;
+    color: #e0e6ed;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #7a8ba8;
+    margin-bottom: 50px;
+    font-weight: 400;
+  }
+  .flow-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* Layer sections */
+  .layer {
+    position: relative;
+    margin-bottom: 36px;
+    padding: 28px 32px 24px;
+    border-radius: 16px;
+    border: 1px solid;
+  }
+  .layer-label {
+    position: absolute;
+    top: -13px;
+    left: 28px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 4px;
+  }
+  .layer-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-top: 4px;
+  }
+  .layer-desc {
+    font-size: 0.82rem;
+    color: #8a9ab5;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* Layer 1: Data */
+  .layer-data { border-color: #1e3a5f; background: linear-gradient(135deg, #0d1927 0%, #111d2e 100%); }
+  .layer-data .layer-label { background: #1a3353; color: #4a9eff; }
+  .layer-data .layer-title { color: #4a9eff; }
+
+  /* Layer 2: Analysis */
+  .layer-analysis { border-color: #3a2e1e; background: linear-gradient(135deg, #1a150d 0%, #201a11 100%); }
+  .layer-analysis .layer-label { background: #3a2e1a; color: #f0a030; }
+  .layer-analysis .layer-title { color: #f0a030; }
+
+  /* Layer 3: Synthesis */
+  .layer-synthesis { border-color: #1e3a2e; background: linear-gradient(135deg, #0d1a14 0%, #111f18 100%); }
+  .layer-synthesis .layer-label { background: #1a3a2a; color: #40d090; }
+  .layer-synthesis .layer-title { color: #40d090; }
+
+  /* Nodes */
+  .nodes {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .node {
+    padding: 14px 18px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 140px;
+    flex: 1;
+    max-width: 220px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+    position: relative;
+  }
+  .node:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .node-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .node-desc {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    opacity: 0.75;
+  }
+
+  /* Data nodes */
+  .layer-data .node {
+    background: #132238;
+    border: 1px solid #1e3a5f;
+  }
+  .layer-data .node-title { color: #6ab4ff; }
+
+  /* Analysis nodes */
+  .layer-analysis .node {
+    background: #231c10;
+    border: 1px solid #3a2e1e;
+  }
+  .layer-analysis .node-title { color: #f0b850; }
+
+  /* Synthesis nodes */
+  .layer-synthesis .node {
+    background: #102a1e;
+    border: 1px solid #1e3a2e;
+  }
+  .layer-synthesis .node-title { color: #50e0a0; }
+
+  /* Perspective split */
+  .perspective-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 14px;
+  }
+  .perspective-box {
+    padding: 16px 20px;
+    border-radius: 10px;
+    flex: 1;
+    max-width: 340px;
+    text-align: center;
+  }
+  .perspective-bull {
+    background: #1a2a18;
+    border: 1px solid #2a4a22;
+  }
+  .perspective-bull .node-title { color: #70d070; }
+  .perspective-bear {
+    background: #2a1a18;
+    border: 1px solid #4a2a22;
+  }
+  .perspective-bear .node-title { color: #e06060; }
+
+  .isolation-wall {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    position: relative;
+  }
+  .wall-line {
+    width: 2px;
+    height: 50px;
+    background: repeating-linear-gradient(to bottom, #f04040 0px, #f04040 4px, transparent 4px, transparent 8px);
+  }
+  .wall-label {
+    font-size: 0.6rem;
+    color: #f06060;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 6px 0;
+  }
+
+  /* Flow arrows between layers */
+  .flow-arrow {
+    display: flex;
+    justify-content: center;
+    margin: -8px 0;
+    position: relative;
+    z-index: 2;
+  }
+  .arrow-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .arrow-line {
+    width: 2px;
+    height: 20px;
+    background: #2a3a50;
+  }
+  .arrow-head {
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 8px solid #2a3a50;
+  }
+  .arrow-label {
+    font-size: 0.65rem;
+    color: #5a6a80;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Output section */
+  .output-section {
+    margin-top: 36px;
+    text-align: center;
+  }
+  .output-box {
+    display: inline-block;
+    padding: 22px 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1a1530 0%, #201840 100%);
+    border: 1px solid #3a2e5f;
+  }
+  .output-box .node-title {
+    font-size: 1rem;
+    color: #b090f0;
+    margin-bottom: 8px;
+  }
+  .output-items {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .output-item {
+    font-size: 0.72rem;
+    color: #9080c0;
+    padding: 4px 12px;
+    background: #15102a;
+    border-radius: 6px;
+    border: 1px solid #2a2050;
+  }
+
+  /* Design principles sidebar */
+  .principles {
+    max-width: 1100px;
+    margin: 50px auto 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .principle {
+    padding: 18px 22px;
+    border-radius: 10px;
+    background: #0e1320;
+    border: 1px solid #1a2235;
+  }
+  .principle-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #d0a040;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .principle-desc {
+    font-size: 0.75rem;
+    color: #7a8ba8;
+    line-height: 1.5;
+  }
+  .principles-header {
+    max-width: 1100px;
+    margin: 50px auto 18px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: #7a8ba8;
+    letter-spacing: 0.5px;
+  }
+
+  /* Computation badge */
+  .badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-top: 6px;
+  }
+  .badge-ai { background: #2a1a3a; color: #b080e0; border: 1px solid #3a2a50; }
+  .badge-code { background: #1a2a3a; color: #60b0e0; border: 1px solid #2a3a50; }
+  .badge-both { background: #2a2a1a; color: #c0b060; border: 1px solid #3a3a2a; }
+
+  /* Vault expansion */
+  .vault-section {
+    margin-top: 18px;
+    padding: 20px 24px 18px;
+    border-radius: 12px;
+    background: #0c1a2e;
+    border: 1px solid #1a3050;
+    position: relative;
+  }
+  .vault-section-label {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 3px;
+    background: #1a3050;
+    color: #4a9eff;
+  }
+  .vault-grid {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .vault-card {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: #101e30;
+    border: 1px solid #1e3555;
+    text-align: center;
+    min-width: 120px;
+    flex: 1;
+    max-width: 180px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .vault-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  }
+  .vault-card.vault-active {
+    border-color: #3070b0;
+    box-shadow: 0 0 12px rgba(74, 158, 255, 0.1);
+  }
+  .vault-card.vault-future {
+    opacity: 0.45;
+    border-style: dashed;
+  }
+  .vault-icon {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+  .vault-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6ab4ff;
+    margin-bottom: 3px;
+  }
+  .vault-detail {
+    font-size: 0.65rem;
+    color: #5a7a9a;
+    line-height: 1.3;
+  }
+  .vault-card.vault-future .vault-name { color: #3a6090; }
+
+  /* Cross-vault insight flow */
+  .cross-vault {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #0e1a30 0%, #18243a 50%, #0e1a30 100%);
+    border: 1px solid #253a55;
+    position: relative;
+  }
+  .cross-vault-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #80c0ff;
+  }
+  .cross-vault-desc {
+    font-size: 0.65rem;
+    color: #5a7a9a;
+    line-height: 1.3;
+  }
+  .cross-vault-line {
+    position: absolute;
+    top: -1px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #3070b0, #3070b0, transparent);
+  }
+  .cross-vault-examples {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 6px;
+  }
+  .cross-example {
+    font-size: 0.6rem;
+    color: #6090b0;
+    padding: 2px 8px;
+    background: #0c1520;
+    border-radius: 4px;
+    border: 1px solid #1a2a3a;
+  }
+
+  /* Vault injection arrows */
+  .vault-inject {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 12px;
+  }
+  .inject-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .inject-line {
+    width: 2px;
+    height: 14px;
+    background: #2a4a6a;
+  }
+  .inject-head {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #2a4a6a;
+  }
+  .inject-label {
+    font-size: 0.58rem;
+    color: #4a7aa0;
+    margin-top: 1px;
+    white-space: nowrap;
+  }
+
+  /* Why This Is Hard section */
+  .hard-section {
+    max-width: 1100px;
+    margin: 50px auto 0;
+  }
+  .hard-header {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: #c05050;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+  }
+  .hard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 700px) {
+    .hard-grid { grid-template-columns: 1fr; }
+  }
+  .hard-card {
+    padding: 20px 24px;
+    border-radius: 10px;
+    background: #140e0e;
+    border: 1px solid #2a1a1a;
+    position: relative;
+    overflow: hidden;
+  }
+  .hard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: #c05050;
+    border-radius: 3px 0 0 3px;
+  }
+  .hard-card-number {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #c05050;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .hard-card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e08080;
+    margin-bottom: 6px;
+  }
+  .hard-card-naive {
+    font-size: 0.72rem;
+    color: #5a4a4a;
+    margin-bottom: 8px;
+    padding-left: 12px;
+    border-left: 2px solid #2a1a1a;
+    font-style: italic;
+  }
+  .hard-card-real {
+    font-size: 0.72rem;
+    color: #9a7a7a;
+    line-height: 1.5;
+  }
+  .hard-card-real strong { color: #c0a0a0; font-weight: 600; }
+  .hard-bottom {
+    margin-top: 18px;
+    padding: 18px 24px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #140e0e 0%, #1a1010 100%);
+    border: 1px solid #2a1a1a;
+    text-align: center;
+  }
+  .hard-bottom-quote {
+    font-size: 0.9rem;
+    color: #c0a0a0;
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .hard-bottom-quote strong { color: #e0c0c0; }
+
+  /* Analyst layer */
+  .analyst-layer {
+    position: relative;
+    margin-bottom: 36px;
+    padding: 28px 32px 24px;
+    border-radius: 16px;
+    border: 2px solid #d4a030;
+    background: linear-gradient(135deg, #1a1608 0%, #201c0e 100%);
+    box-shadow: 0 0 20px rgba(212, 160, 48, 0.08);
+  }
+  .analyst-layer .layer-label {
+    background: #3a3010;
+    color: #d4a030;
+    position: absolute;
+    top: -13px;
+    left: 28px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 4px;
+  }
+  .analyst-layer .layer-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #d4a030;
+    margin-bottom: 4px;
+    margin-top: 4px;
+  }
+  .analyst-layer .layer-desc {
+    font-size: 0.82rem;
+    color: #a09060;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .analyst-roles {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .analyst-role {
+    padding: 16px 18px;
+    border-radius: 10px;
+    background: #1a1608;
+    border: 1px solid #3a3010;
+    text-align: center;
+    flex: 1;
+    min-width: 160px;
+    max-width: 240px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .analyst-role:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .analyst-role-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e0b840;
+    margin-bottom: 5px;
+  }
+  .analyst-role-desc {
+    font-size: 0.72rem;
+    color: #8a7a50;
+    line-height: 1.4;
+  }
+  .badge-human { background: #2a2410; color: #d4a030; border: 1px solid #3a3010; }
+  .analyst-feedback {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 16px;
+  }
+  .feedback-arrow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .feedback-arrow-line {
+    width: 30px;
+    height: 2px;
+  }
+  .feedback-arrow-up .feedback-arrow-line { background: #6a5a20; }
+  .feedback-arrow-up .feedback-arrow-head {
+    width: 0; height: 0;
+    border-bottom: 6px solid #6a5a20;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+  .feedback-arrow-down .feedback-arrow-line { background: #6a5a20; }
+  .feedback-arrow-down .feedback-arrow-head {
+    width: 0; height: 0;
+    border-top: 6px solid #6a5a20;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+  .feedback-label {
+    font-size: 0.6rem;
+    color: #6a5a20;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<h1>EHF &mdash; AI-Powered Equity Research</h1>
+<p class="subtitle">Multi-agent system producing actionable investment memos</p>
+
+<div class="flow-container">
+
+  <!-- LAYER 1: DATA -->
+  <div class="layer layer-data">
+    <div class="layer-label">Layer 1</div>
+    <div class="layer-title">Data Gathering</div>
+    <div class="layer-desc">Gather wide, filter later &mdash; collect everything, apply judgment downstream</div>
+    <div class="nodes">
+      <div class="node">
+        <div class="node-title">Financial APIs</div>
+        <div class="node-desc">Price, fundamentals, estimates, revisions</div>
+        <div class="badge badge-code">Deterministic</div>
+      </div>
+      <div class="node">
+        <div class="node-title">SEC Filings</div>
+        <div class="node-desc">10-K/Q, XBRL parsing, segment data</div>
+        <div class="badge badge-code">Deterministic</div>
+      </div>
+      <div class="node">
+        <div class="node-title">Industry Research</div>
+        <div class="node-desc">Real-time sector intelligence via AI research agents</div>
+        <div class="badge badge-ai">AI Agent</div>
+      </div>
+    </div>
+
+    <!-- Industry Vault Expansion -->
+    <div class="vault-section">
+      <div class="vault-section-label">Industry Knowledge System</div>
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 0.82rem; font-weight: 600; color: #6ab4ff; margin-bottom: 3px;">Sector Vaults</div>
+        <div style="font-size: 0.72rem; color: #5a7a9a; line-height: 1.4;">Each vault encodes HOW to think about an industry &mdash; value chain structure, competitive dynamics, margin drivers, cycle patterns. Not current data, but durable analytical frameworks.</div>
+      </div>
+      <div class="vault-grid">
+        <div class="vault-card vault-active">
+          <div class="vault-name">Solar Energy</div>
+          <div class="vault-detail">Value chain, ITC/IRA policy, module vs inverter dynamics, NEM rules</div>
+        </div>
+        <div class="vault-card vault-active">
+          <div class="vault-name">Data Centers</div>
+          <div class="vault-detail">Power density, cooling tech, hyperscaler CapEx cycles, interconnect</div>
+        </div>
+        <div class="vault-card vault-future">
+          <div class="vault-name">Optical / Photonics</div>
+          <div class="vault-detail">Future vault</div>
+        </div>
+        <div class="vault-card vault-future">
+          <div class="vault-name">Semiconductors</div>
+          <div class="vault-detail">Future vault</div>
+        </div>
+        <div class="vault-card vault-future">
+          <div class="vault-name">+ More Sectors</div>
+          <div class="vault-detail">Extensible architecture</div>
+        </div>
+      </div>
+
+      <!-- Cross-vault insight -->
+      <div class="cross-vault">
+        <div class="cross-vault-line"></div>
+        <div>
+          <div class="cross-vault-label">Cross-Vault Insights</div>
+          <div class="cross-vault-desc">When a stock touches multiple sectors, the system draws from multiple vaults simultaneously &mdash; surfacing connections that single-sector analysis misses</div>
+          <div class="cross-vault-examples">
+            <div class="cross-example">Solar inverter company + Data center power demand</div>
+            <div class="cross-example">Semiconductor supply chain + End-market demand signals</div>
+            <div class="cross-example">Policy impacts that ripple across sectors</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Injection points -->
+      <div class="vault-inject">
+        <div class="inject-arrow">
+          <div class="inject-line"></div>
+          <div class="inject-head"></div>
+          <div class="inject-label">Enriches fact filtering</div>
+        </div>
+        <div class="inject-arrow">
+          <div class="inject-line"></div>
+          <div class="inject-head"></div>
+          <div class="inject-label">Frames perspective analysis</div>
+        </div>
+        <div class="inject-arrow">
+          <div class="inject-line"></div>
+          <div class="inject-head"></div>
+          <div class="inject-label">Informs synthesis context</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow"><div class="arrow-body"><div class="arrow-line"></div><div class="arrow-head"></div><div class="arrow-label">Facts only &mdash; no opinions</div></div></div>
+
+  <!-- LAYER 2: ANALYSIS -->
+  <div class="layer layer-analysis">
+    <div class="layer-label">Layer 2</div>
+    <div class="layer-title">Structured Analysis</div>
+    <div class="layer-desc">Adversarial reasoning &mdash; independent perspectives built in isolation, each committing to its strongest argument</div>
+    <div class="nodes">
+      <div class="node">
+        <div class="node-title">Fact Filtering</div>
+        <div class="node-desc">Separates verifiable data from narrative and opinion</div>
+        <div class="badge badge-ai">AI</div>
+      </div>
+      <div class="node">
+        <div class="node-title">Signal Extraction</div>
+        <div class="node-desc">Structural drivers, estimate revisions, forward signals</div>
+        <div class="badge badge-ai">AI</div>
+      </div>
+      <div class="node">
+        <div class="node-title">Quantitative Frameworks</div>
+        <div class="node-desc">Implied expectations, revenue bridge decomposition, SOTP valuation</div>
+        <div class="badge badge-code">Deterministic</div>
+      </div>
+    </div>
+
+    <!-- Pre-Brief + Framework Memo row -->
+    <div style="display: flex; gap: 14px; justify-content: center; margin-top: 16px; flex-wrap: wrap;">
+      <div class="node" style="max-width: 320px; border-color: #5a4020;">
+        <div class="node-title">Pre-Analytical Brief</div>
+        <div class="node-desc">Frames what the stock IS before analyzing it &mdash; identifies key debates, consensus gaps, and what questions the analysis must answer</div>
+        <div class="badge badge-ai">AI &mdash; Deep Reasoning</div>
+      </div>
+      <div class="node" style="max-width: 320px; border-color: #5a4020;">
+        <div class="node-title">Framework Memo</div>
+        <div class="node-desc">Classifies the stock (identity pivot, regime shift, or parametric) and <strong>binds</strong> which valuation frameworks perspectives must use &mdash; preventing default-to-generic analysis</div>
+        <div class="badge badge-ai">AI &mdash; Deep Reasoning</div>
+      </div>
+    </div>
+
+    <!-- Perspective split with isolation wall -->
+    <div class="perspective-row">
+      <div class="perspective-box perspective-bull">
+        <div class="node-title">Bull Perspective</div>
+        <div class="node-desc">Independent thesis, own valuation model, bound by framework classification</div>
+        <div class="badge badge-ai">AI &mdash; Deep Reasoning</div>
+      </div>
+      <div class="isolation-wall">
+        <div class="wall-line"></div>
+        <div class="wall-label">Isolated</div>
+        <div class="wall-line"></div>
+      </div>
+      <div class="perspective-box perspective-bear">
+        <div class="node-title">Bear Perspective</div>
+        <div class="node-desc">Independent thesis, own valuation model, bound by framework classification</div>
+        <div class="badge badge-ai">AI &mdash; Deep Reasoning</div>
+      </div>
+    </div>
+
+    <!-- Validation -->
+    <div class="nodes" style="margin-top: 16px;">
+      <div class="node" style="max-width: 320px; border-color: #5a4020;">
+        <div class="node-title">Validation Gate</div>
+        <div class="node-desc">Schema enforcement, numerical verification, source tracing &mdash; catches non-determinism before it reaches output</div>
+        <div class="badge badge-code">Deterministic</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow"><div class="arrow-body"><div class="arrow-line"></div><div class="arrow-head"></div><div class="arrow-label">Validated perspectives &mdash; independently constructed</div></div></div>
+
+  <!-- LAYER 3: SYNTHESIS -->
+  <div class="layer layer-synthesis">
+    <div class="layer-label">Layer 3</div>
+    <div class="layer-title">Decision Synthesis</div>
+    <div class="layer-desc">Weighs argument quality, identifies shared blind spots, produces actionable output &mdash; not a summary</div>
+    <div class="nodes">
+      <div class="node">
+        <div class="node-title">Variant Evidence Sorting</div>
+        <div class="node-desc">Classifies each piece of evidence as genuinely non-consensus or already priced in &mdash; before weighing direction</div>
+        <div class="badge badge-ai">AI</div>
+      </div>
+      <div class="node">
+        <div class="node-title">Argument Weighing</div>
+        <div class="node-desc">Which thesis has stronger evidence? Where does consensus disagree?</div>
+        <div class="badge badge-ai">AI</div>
+      </div>
+      <div class="node">
+        <div class="node-title">Blind Spot Detection</div>
+        <div class="node-desc">Assumptions shared by BOTH sides &mdash; if wrong, both cases break</div>
+        <div class="badge badge-ai">AI</div>
+      </div>
+      <div class="node">
+        <div class="node-title">Recommendation</div>
+        <div class="node-desc">Direction, conviction, entry criteria, target range, kill criteria</div>
+        <div class="badge badge-both">AI + Rules</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow"><div class="arrow-body"><div class="arrow-line"></div><div class="arrow-head"></div></div></div>
+
+  <!-- OUTPUT -->
+  <div class="output-section">
+    <div class="output-box">
+      <div class="node-title">Investment Memo</div>
+      <div class="node-desc" style="color: #9080c0;">System output &mdash; starting point, not final answer</div>
+      <div class="output-items">
+        <div class="output-item">BUY / SELL / NEUTRAL</div>
+        <div class="output-item">Conviction Level</div>
+        <div class="output-item">Target Range</div>
+        <div class="output-item">Revenue Bridge Decomposition</div>
+        <div class="output-item">SOTP Valuation (if applicable)</div>
+        <div class="output-item">Entry + Kill Criteria</div>
+        <div class="output-item">Key Catalysts + Dates</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow"><div class="arrow-body"><div class="arrow-line"></div><div class="arrow-head"></div></div></div>
+
+  <!-- ANALYST LAYER -->
+  <div class="analyst-layer">
+    <div class="layer-label">The Analyst</div>
+    <div class="layer-title">Human Decision Authority</div>
+    <div class="layer-desc">The system compresses weeks of grunt work into hours. The analyst spends their time on what humans do best &mdash; judgment, context, and the final call.</div>
+    <div class="analyst-roles">
+      <div class="analyst-role">
+        <div class="analyst-role-title">Challenge &amp; Validate</div>
+        <div class="analyst-role-desc">Stress-test assumptions, apply context the system can't access &mdash; management credibility, channel checks, portfolio positioning</div>
+        <div class="badge badge-human">Human Judgment</div>
+      </div>
+      <div class="analyst-role">
+        <div class="analyst-role-title">Curate Domain Knowledge</div>
+        <div class="analyst-role-desc">Industry expertise feeds the vaults. The analyst knows which dynamics actually matter &mdash; the system operationalizes that knowledge at scale</div>
+        <div class="badge badge-human">Human Expertise</div>
+      </div>
+      <div class="analyst-role">
+        <div class="analyst-role-title">Calibrate &amp; Override</div>
+        <div class="analyst-role-desc">Learn when to trust the system and when to override it. Pattern recognition across runs &mdash; "systematically too bearish at troughs" &mdash; is the analyst's edge</div>
+        <div class="badge badge-human">Human Pattern Recognition</div>
+      </div>
+      <div class="analyst-role">
+        <div class="analyst-role-title">Own the Call</div>
+        <div class="analyst-role-desc">The PM doesn't trade the system's output. The analyst reviews, refines, and presents &mdash; the recommendation carries their conviction, not the machine's</div>
+        <div class="badge badge-human">Accountability</div>
+      </div>
+    </div>
+
+    <!-- Feedback loops -->
+    <div class="analyst-feedback">
+      <div class="feedback-arrow feedback-arrow-up">
+        <div class="feedback-arrow-head"></div>
+        <div class="feedback-arrow-line"></div>
+        <div class="feedback-label">Vault curation feeds back into system</div>
+      </div>
+      <div class="feedback-arrow feedback-arrow-up">
+        <div class="feedback-arrow-head"></div>
+        <div class="feedback-arrow-line"></div>
+        <div class="feedback-label">Calibration data improves future runs</div>
+      </div>
+      <div class="feedback-arrow feedback-arrow-down">
+        <div class="feedback-arrow-line"></div>
+        <div class="feedback-arrow-head"></div>
+        <div class="feedback-label">Final recommendation to PM</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- DESIGN PRINCIPLES -->
+<div class="principles-header">Design Principles &mdash; What We Must Get Right</div>
+<div class="principles">
+  <div class="principle">
+    <div class="principle-title">Temporal Discipline</div>
+    <div class="principle-desc">Analysis uses ONLY information available before a price move. LLMs naturally explain outcomes &mdash; every layer is designed to prevent hindsight contamination.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-title">Information Isolation</div>
+    <div class="principle-desc">Bull and bear perspectives are constructed independently. No hedging, no "on the other hand." Each must commit to its strongest argument.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-title">AI Judges, Code Computes</div>
+    <div class="principle-desc">LLMs apply analytical judgment &mdash; which metric matters and why. All arithmetic (valuations, ratios, implied expectations) is deterministic code. Eliminates an entire class of errors.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-title">Non-Determinism Is Managed</div>
+    <div class="principle-desc">AI models can produce different outputs from identical inputs. Validation gates, schema enforcement, and structured outputs catch quality variance before it reaches the memo.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-title">Wrong-but-Explicit > Vague-but-Safe</div>
+    <div class="principle-desc">A specific call that can be proven wrong is more valuable than a hedge that can never be falsified. The system takes positions and states assumptions clearly.</div>
+  </div>
+  <div class="principle">
+    <div class="principle-title">Investment Process Drives Architecture</div>
+    <div class="principle-desc">Every design decision starts with "what would a good analyst do?" The technology serves the investment process, not the other way around.</div>
+  </div>
+</div>
+
+<!-- WHY THIS IS HARD -->
+<div class="hard-section">
+  <div class="hard-header">Why This Is Hard &mdash; The Demo-to-Production Gap</div>
+  <div class="hard-grid">
+    <div class="hard-card">
+      <div class="hard-card-number">Challenge 01</div>
+      <div class="hard-card-title">LLMs Are Trained on Hindsight</div>
+      <div class="hard-card-naive">Naive approach: "Only use information before date X"</div>
+      <div class="hard-card-real">You can't prompt your way out of this. LLMs leak future knowledge through <strong>framing, emphasis, and word choice</strong> even when told not to. The system must structurally prevent contamination &mdash; controlling what data the model can see, not just asking it to ignore what it knows.</div>
+    </div>
+    <div class="hard-card">
+      <div class="hard-card-number">Challenge 02</div>
+      <div class="hard-card-title">AI Wants to Hedge, Not Commit</div>
+      <div class="hard-card-naive">Naive approach: "Give me a strong bull case"</div>
+      <div class="hard-card-real">RLHF literally trains models to be balanced and non-committal. Getting an AI to build a <strong>genuinely independent thesis with specific assumptions and kill criteria</strong> &mdash; not "growth is strong but valuation is stretched" &mdash; requires architectural separation, not just prompting. Each perspective must be constructed without seeing the other.</div>
+    </div>
+    <div class="hard-card">
+      <div class="hard-card-number">Challenge 03</div>
+      <div class="hard-card-title">Same Input, Different Output</div>
+      <div class="hard-card-naive">Naive approach: "Test it once, ship it"</div>
+      <div class="hard-card-real">Run the same ticker twice, get materially different quality. <strong>Non-determinism isn't a bug &mdash; it's inherent to the technology.</strong> You need validation gates that catch variance, schema enforcement that prevents structural drift, and regression testing across runs. Most AI demos quietly cherry-pick the good outputs.</div>
+    </div>
+    <div class="hard-card">
+      <div class="hard-card-number">Challenge 04</div>
+      <div class="hard-card-title">LLMs Can't Do Math</div>
+      <div class="hard-card-naive">Naive approach: "Calculate the implied P/E ratio"</div>
+      <div class="hard-card-real">An LLM will confidently give you a wrong number. <strong>Every numerical claim must be computed deterministically by code</strong> &mdash; valuations, growth rates, implied expectations. The AI's job is to decide which metric matters and why. Python does the arithmetic. Mixing these two roles is how you get plausible-looking memos with fabricated numbers.</div>
+    </div>
+    <div class="hard-card">
+      <div class="hard-card-number">Challenge 05</div>
+      <div class="hard-card-title">Industry Knowledge Without Industry Bias</div>
+      <div class="hard-card-naive">Naive approach: "Here's everything about the solar industry"</div>
+      <div class="hard-card-real">Vault knowledge must teach the model <strong>HOW to think about a sector without telling it WHAT to conclude.</strong> Feed current-state industry data directly and the model anchors on it instead of reasoning independently. The boundary between "analytical framework" and "conclusion bias" is subtle and breaks easily &mdash; especially across vaults where cross-sector signals can amplify bias.</div>
+    </div>
+    <div class="hard-card">
+      <div class="hard-card-number">Challenge 06</div>
+      <div class="hard-card-title">Compound Failures Are Silent</div>
+      <div class="hard-card-naive">Naive approach: "Each component works, so the system works"</div>
+      <div class="hard-card-real">Individual components can be correct but their <strong>interaction produces the wrong answer.</strong> A consensus data module works. A cyclical trough detector works. Together, they can over-anchor a valuation and flip a recommendation. You have to test the system as a whole, not just the parts &mdash; and the failure modes are different every time.</div>
+    </div>
+  </div>
+  <div class="hard-bottom">
+    <div class="hard-bottom-quote">"Anyone can get an AI to write something that <strong>looks like</strong> an investment memo.<br>The hard part is making it produce something you'd actually <strong>trust enough to trade on</strong>.<br>That's the difference between a demo and a system."</div>
+  </div>
+</div>
+
+</body>
+</html>
